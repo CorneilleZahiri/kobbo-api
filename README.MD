@@ -1,5 +1,7 @@
 # Documentation utilisateur – Profil Administrateur (Kobbo)
 
+## NB: Consulter le fichier src/main/resources/database/migration/V1__Create_data_base.sql pour comprendre l'analyse
+
 ## 📚 Introduction
 
 **Kobbo** est une application SaaS open source permettant la gestion des dépenses et recettes pour les particuliers, 
