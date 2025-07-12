@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: kobbo
+  datasource:
+    url: jdbc:mysql://localhost:3306/kobbo?createDatabaseIfNotExist=true
+    username: root
+    password: zahiri
+  jpa:
+    show-sql: true
