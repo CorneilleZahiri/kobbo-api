@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: /pps/api/kobbo
 spring:
   application:
     name: kobbo
