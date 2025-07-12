@@ -12,7 +12,7 @@
 	<artifactId>kobbo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>kobbo</name>
-	<description>Gestion des des dépenses et recettes</description>
+	<description>Gestion des dépenses et recettes</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -48,6 +48,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>me.paulschwarz</groupId>
+			<artifactId>spring-dotenv</artifactId>
+			<version>4.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

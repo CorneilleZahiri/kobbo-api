@@ -4,6 +4,6 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/kobbo?createDatabaseIfNotExist=true
     username: root
-    password:
+    password: ${PASSWORD_DB}
   jpa:
     show-sql: true
