@@ -20,14 +20,16 @@ email VARCHAR(255) NOT NULL UNIQUE,
 mot_de_passe  VARCHAR(255) NOT NULL,
 profil_utilisateurs_id BIGINT NOT NULL,
 societes_id binary(16),
-CONSTRAINT fk_profils FOREIGN KEY (profil_utilisateurs_id) REFERENCES profil_utilisateurs (id) ON DELETE CASCADE,
-CONSTRAINT fk_societes FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
+CONSTRAINT fk_utilisateur_profils FOREIGN KEY (profil_utilisateurs_id) REFERENCES profil_utilisateurs (id) ON DELETE CASCADE,
+CONSTRAINT fk_utilisateur_societes FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
 );
 
 #-- Cette table enregistre les natures des opérations comme le SALAIRE, le LOYER etc. --
 CREATE TABLE natures(
 id BIGINT primary key AUTO_INCREMENT NOT NULL,
-intitule VARCHAR(255) NOT NULL
+intitule VARCHAR(255) NOT NULL,
+societes_id binary(16) NOT NULL,
+CONSTRAINT fk_nature_societe FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
 );
 
 #-- Cette table permet d'associer à chaque opération
@@ -35,7 +37,9 @@ intitule VARCHAR(255) NOT NULL
 CREATE TABLE responsables(
 id binary(16) primary key not null default(uuid_to_bin(uuid())),
 nom VARCHAR(255) NOT NULL,
-fonction  VARCHAR(255)
+fonction  VARCHAR(255),
+societes_id binary(16) NOT NULL,
+CONSTRAINT fk_responsable_societe FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
 );
 
 #--La table de toutes les opérations
@@ -50,10 +54,12 @@ utilisateurs_id binary(16) NOT NULL,
 responsables_id binary(16) NOT NULL,
 natures_id BIGINT NOT NULL,
 date_creation timestamp default(current_timestamp()),
+societes_id binary(16) NOT NULL,
 
-CONSTRAINT fk_utilisateurs FOREIGN KEY (utilisateurs_id) REFERENCES utilisateurs (id) ON DELETE CASCADE,
-CONSTRAINT fk_responsables FOREIGN KEY (responsables_id) REFERENCES responsables (id) ON DELETE CASCADE,
-CONSTRAINT fk_natures FOREIGN KEY (natures_id) REFERENCES natures (id) ON DELETE CASCADE
+CONSTRAINT fk_operation_utilisateurs FOREIGN KEY (utilisateurs_id) REFERENCES utilisateurs (id) ON DELETE CASCADE,
+CONSTRAINT fk_operation_responsables FOREIGN KEY (responsables_id) REFERENCES responsables (id) ON DELETE CASCADE,
+CONSTRAINT fk_operation_natures FOREIGN KEY (natures_id) REFERENCES natures (id) ON DELETE CASCADE,
+CONSTRAINT fk_operation_societe FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
 );
 
 #-- Pour les filtres indépendants ou combinés

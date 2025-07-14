@@ -1,232 +1,359 @@
-# Documentation utilisateur – Profil Administrateur (Kobbo)
+# 💸 Kobbo - Gestion des dépenses et recettes
 
-## NB: Consulter le fichier src/main/resources/database/migration/V1__Create_data_base.sql pour comprendre l'analyse
+Kobbo est un projet **open source** permettant aux **particuliers** et les **petites et moyennes entreprises  (PME)** de
+suivre facilement leurs **dépenses** et **recettes**.
 
-## 📚 Introduction
-
-**Kobbo** est une application SaaS open source permettant la gestion des dépenses et recettes pour les particuliers, 
-professionnels indépendants, et petites entreprises. Cette documentation présente le parcours complet 
-d'un **utilisateur Administrateur**, de la création de son compte jusqu'à sa déconnexion.
+L'objectif principal est de fournir une plateforme simple et efficace pour une meilleure visibilité financière.
 
 ---
 
-## 🔧 Scénario complet du profil **Administrateur**
+## 🧩 Fonctionnalités principales
 
-### ✅ 1. Création de compte
+- Création et gestion de plusieurs sociétés
+- Gestion des utilisateurs avec rôles (profils)
+- Enregistrement des opérations (dépenses/recettes)
+- Catégorisation des opérations par nature (salaire, loyer, etc.)
+- Association des opérations à des responsables réels
+- Filtres puissants par date, type, société, etc.
 
-#### URL : `POST /auth/register`
+---
 
-L'utilisateur fournit :
+## 🧱 Modèle de données relationnel
 
-- `nom`
-- `email`
-- `mot_de_passe`
+L'application repose sur une base de données MySQL structurée comme suit :
 
-Le backend :
+### Tables et relations :
 
-- Crée un utilisateur avec un profil temporaire
-- Génère un identifiant UUID
-- Retourne une confirmation d'inscription
+- **`societes`** : entités principales (PME, particuliers)
+- **`profil_utilisateurs`** : rôles des utilisateurs
+- **`utilisateurs`** : personnes utilisant la plateforme
+- **`natures`** : types d'opérations financières (ex : Salaire)
+- **`responsables`** : personnes physiques responsables d'une opération
+- **`operations`** : enregistrement des transactions financières
 
-**✉️ Réponse attendue :**
+📊 Un diagramme UML est fourni pour visualiser les relations entre les entités :
 
-```json
-{
-  "message": "Compte créé avec succès. Connectez-vous pour continuer."
-}
+![Diagramme UML - Kobbo](./Diagramme_kobbo.png)
+
+---
+
+## ⚙️ Technologies utilisées
+
+- **Langage** : SQL / Java / Spring Boot (recommandé)
+- **Base de données** : MySQL / MariaDB
+- **Sécurité** : UUID, contraintes d'intégrité, authentification (JWT) basée sur rôles
+- **Frontend** : Libre choix (Angular, React, etc.)
+
+---
+
+## 🚀 Installation
+
+### 🔧 Prérequis
+
+- Java 17+
+- MySQL 8+
+- Maven / Gradle
+- (Optionnel) Docker & Docker Compose
+
+### 📥 Étapes
+
+1. Clonez le projet :
+
+```bash
+git clone https://github.com/votre-utilisateur/kobbo.git
+cd kobbo
 ```
 
----
+### 🤝 Contribution
 
-### 🔐 2. Connexion
+Les contributions sont les bienvenues !
 
-#### URL : `POST /auth/login`
+Forkez le projet
 
-L'utilisateur s'identifie avec :
+Créez une branche (feature/ma-fonctionnalite)
 
-- `email`
-- `mot_de_passe`
+Commitez vos modifications (git commit -am 'Ajout nouvelle fonctionnalité')
 
-Le backend :
+Pushez (git push origin feature/ma-fonctionnalite)
 
-- Vérifie les identifiants
-- Retourne un **JWT Token** et les informations utilisateur
+Ouvrez une Pull Request
 
-**✉️ Réponse attendue :**
+### 👨‍💻 Auteur
 
-```json
-{
-  "token": "eyJhbGci...",
-  "profil": "TEMPORAIRE",
-  "societe": null
-}
-```
+Développé avec ❤️ par Corneille GBEAGA.
+Contact : cgbeaga@gmail.com
 
 ---
 
-### 🏢 3. Création de société (obligatoire si aucune société liée)
-
-#### URL : `POST /societes`
-
-Lorsque `societes_id` de l'utilisateur est `null`, on affiche un formulaire de création d'entreprise.
-
-Champs requis :
-
-- `raison_sociale`
-- `email`
-- `adresse` (optionnelle)
-
-Le backend :
-
-- Crée une nouvelle entrée dans la table `societes`
-- Met à jour la table `utilisateurs` :
-   - Associe `societes_id`
-   - Change `profil_utilisateurs_id` en **ADMIN**
-
-**✉️ Réponse attendue :**
-
-```json
-{
-  "message": "Société créée avec succès. Accès au dashboard disponible."
-}
-```
+# 📋 Endpoints REST - Kobbo API
 
 ---
 
-### 📊 4. Accès au tableau de bord (Dashboard)
+## 🔐 Authentification & Autorisation
 
-#### URL : `GET /dashboard`
+### Authentification
 
-Une fois la société créée, l'administrateur accède au tableau de bord qui affiche :
+* **POST** `/api/auth/login` - Connexion utilisateur
+* **POST** `/api/auth/logout` - Déconnexion utilisateur
+* **POST** `/api/auth/refresh` - Actualiser le token JWT
+* **POST** `/api/auth/forgot-password` - Demande de réinitialisation mot de passe
+* **POST** `/api/auth/reset-password` - Réinitialisation mot de passe
 
-- Solde actuel
-- Total dépenses / recettes
-- Répartition par nature
-- Liste des dernières opérations
+### Gestion des utilisateurs
 
----
-
-### 💼 5. Gestion des utilisateurs (membres de la société)
-
-#### URL : `POST /utilisateurs`
-
-Le profil ADMIN peut :
-
-- Inviter des utilisateurs à rejoindre la société
-- Leur attribuer un **profil utilisateur** (LECTEUR, MEMBRE...)
-
-Champs requis :
-
-- `nom`, `email`, `mot_de_passe`, `profil_utilisateur`
+* **GET** `/api/users` - Lister tous les utilisateurs (**Admin**)
+* **GET** `/api/users/{id}` - Récupérer un utilisateur par ID
+* **POST** `/api/users` - Créer un nouvel utilisateur
+* **PUT** `/api/users/{id}` - Modifier un utilisateur
+* **DELETE** `/api/users/{id}` - Supprimer un utilisateur
+* **GET** `/api/users/me` - Récupérer le profil de l'utilisateur connecté
+* **PUT** `/api/users/me` - Modifier le profil de l'utilisateur connecté
+* **PUT** `/api/users/me/password` - Changer le mot de passe
 
 ---
 
-### 📅 6. Enregistrement d'une opération
+## 🏢 Gestion des Sociétés
 
-#### URL : `POST /operations`
+### CRUD Sociétés
 
-Champs requis :
+* **GET** `/api/societes` - Lister toutes les sociétés accessibles
+* **GET** `/api/societes/{id}` - Récupérer une société par ID
+* **POST** `/api/societes` - Créer une nouvelle société
+* **PUT** `/api/societes/{id}` - Modifier une société
+* **DELETE** `/api/societes/{id}` - Supprimer une société
 
-- `date_operation`
-- `intitule`
-- `montant`
-- `type` (`DEPENSE`, `RECETTE`)
-- `natures_id`
-- `responsables_id` (créable via `/responsables`)
-- `url_fichier` (facultatif)
+### Gestion des utilisateurs dans une société
 
----
-
-### 🔎 7. Consultation, recherche et filtrage
-
-#### URL : `GET /operations?type=DEPENSE&date_debut=2024-01-01&date_fin=2024-12-31`
-
-L'administrateur peut :
-
-- Filtrer par date, type, nature
-- Accéder aux détails d'une opération
+* **GET** `/api/societes/{id}/users` - Lister les utilisateurs d'une société
+* **POST** `/api/societes/{id}/users` - Ajouter un utilisateur à une société
+* **PUT** `/api/societes/{societeId}/users/{userId}` - Modifier le rôle d'un utilisateur
+* **DELETE** `/api/societes/{societeId}/users/{userId}` - Retirer un utilisateur d'une société
 
 ---
 
-### 🛋️ 8. Ajout de nature ou de responsable
+## 👥 Gestion des Profils Utilisateurs
 
-- `POST /natures` pour créer une nouvelle nature d'opération
-- `POST /responsables` pour enregistrer un acteur lié à une opération (ex : plombier)
+### CRUD Profils
 
----
-
-### ❌ 9. Déconnexion
-
-#### Frontend uniquement
-
-- Supprimer le JWT Token du stockage local (localStorage ou cookie)
-- Rediriger vers la page de connexion
+* **GET** `/api/profils` - Lister tous les profils disponibles
+* **GET** `/api/profils/{id}` - Récupérer un profil par ID
+* **POST** `/api/profils` - Créer un nouveau profil (**Admin**)
+* **PUT** `/api/profils/{id}` - Modifier un profil (**Admin**)
+* **DELETE** `/api/profils/{id}` - Supprimer un profil (**Admin**)
 
 ---
 
-## 🔹 Endpoints Backend requis (par module)
+## 🏷️ Gestion des Natures d'Opérations
 
-### 🌐 Authentification
+### CRUD Natures
 
-- `POST /auth/register` : Inscription
-- `POST /auth/login` : Connexion
-- `POST /auth/logout` (optionnel si token-side uniquement)
+* **GET** `/api/natures` - Lister toutes les natures d'opérations
+* **GET** `/api/natures/{id}` - Récupérer une nature par ID
+* **POST** `/api/natures` - Créer une nouvelle nature
+* **PUT** `/api/natures/{id}` - Modifier une nature
+* **DELETE** `/api/natures/{id}` - Supprimer une nature
 
-### 🏢 Sociétés
+### Natures par société
 
-- `POST /societes` : Créer une société
-- `GET /societes/{id}` : Voir les détails
-- `PUT /societes/{id}` : Modifier
-- `DELETE /societes/{id}` : Supprimer
-
-### 👤 Utilisateurs
-
-- `POST /utilisateurs` : Créer/inviter un utilisateur
-- `GET /utilisateurs` : Lister les utilisateurs de la société
-- `GET /utilisateurs/{id}` : Voir les détails d'un utilisateur
-- `PUT /utilisateurs/{id}` : Modifier un utilisateur
-- `DELETE /utilisateurs/{id}` : Supprimer
-
-### 📋 Profils utilisateurs (rôles)
-
-- `GET /profils` : Lister les rôles disponibles (ADMIN, LECTEUR...)
-
-### 📈 Opérations
-
-- `POST /operations` : Créer une opération
-- `GET /operations` : Liste avec filtres
-- `GET /operations/{id}` : Détail d'une opération
-- `PUT /operations/{id}` : Modifier
-- `DELETE /operations/{id}` : Supprimer
-
-### 🛋️ Natures d'opérations
-
-- `POST /natures`
-- `GET /natures`
-- `PUT /natures/{id}`
-- `DELETE /natures/{id}`
-
-### 👨‍💼 Responsables
-
-- `POST /responsables`
-- `GET /responsables`
-- `PUT /responsables/{id}`
-- `DELETE /responsables/{id}`
-
-### ⚖️ Statistiques & dashboard
-
-- `GET /dashboard/solde`
-- `GET /dashboard/graphique-par-nature`
-- `GET /dashboard/repartition-type`
+* **GET** `/api/societes/{societeId}/natures` - Lister les natures d'une société
+* **POST** `/api/societes/{societeId}/natures` - Créer une nature pour une société
 
 ---
 
-## ✉️ Conclusion
+## 👤 Gestion des Responsables
 
-Ce scénario assure une prise en main fluide pour un **utilisateur administrateur** de Kobbo. 
-Il suit un chemin clair de l'inscription à la gestion quotidienne de ses opérations, en passant 
-par la constitution de son espace de travail (société, membres, natures, etc.).
+### CRUD Responsables
 
-La liste des endpoints sert de référence technique pour le développeur backend 
-et garantit une couverture fonctionnelle exhaustive pour le profil Administrateur.
+* **GET** `/api/responsables` - Lister tous les responsables
+* **GET** `/api/responsables/{id}` - Récupérer un responsable par ID
+* **POST** `/api/responsables` - Créer un nouveau responsable
+* **PUT** `/api/responsables/{id}` - Modifier un responsable
+* **DELETE** `/api/responsables/{id}` - Supprimer un responsable
 
+### Responsables par société
+
+* **GET** `/api/societes/{societeId}/responsables` - Lister les responsables d'une société
+* **POST** `/api/societes/{societeId}/responsables` - Créer un responsable pour une société
+
+---
+
+## 💰 Gestion des Opérations (Cœur métier)
+
+### CRUD Opérations
+
+* **GET** `/api/operations` - Lister toutes les opérations (avec filtres)
+* **GET** `/api/operations/{id}` - Récupérer une opération par ID
+* **POST** `/api/operations` - Créer une nouvelle opération
+* **PUT** `/api/operations/{id}` - Modifier une opération
+* **DELETE** `/api/operations/{id}` - Supprimer une opération
+
+### Opérations par société
+
+* **GET** `/api/societes/{societeId}/operations` - Lister les opérations d'une société
+* **POST** `/api/societes/{societeId}/operations` - Créer une opération pour une société
+
+### Filtres et recherches avancées
+
+* **GET** `/api/operations/search` - Recherche avec filtres complexes
+    * Paramètres : `societeId`, `typeOperation`, `dateDebut`, `dateFin`, `responsableId`, `natureId`, `montantMin`,
+      `montantMax`
+* **GET** `/api/operations/by-periode` - Opérations par période
+    * Paramètres : `societeId`, `debut`, `fin`, `groupBy` (jour/semaine/mois)
+* **GET** `/api/operations/by-nature` - Opérations groupées par nature
+* **GET** `/api/operations/by-responsable` - Opérations groupées par responsable
+* **GET** `/api/operations/by-type` - Opérations groupées par type (dépense/recette)
+
+---
+
+## 📊 Endpoints de Statistiques et Rapports
+
+### Statistiques générales
+
+* **GET** `/api/stats/dashboard` - Données du tableau de bord
+* **GET** `/api/stats/societe/{id}/resume` - Résumé financier d'une société
+* **GET** `/api/stats/societe/{id}/evolution` - Évolution des finances dans le temps
+
+### Rapports par période
+
+* **GET** `/api/reports/societe/{id}/mensuel` - Rapport mensuel
+* **GET** `/api/reports/societe/{id}/annuel` - Rapport annuel
+* **GET** `/api/reports/societe/{id}/custom` - Rapport personnalisé (dates libres)
+
+### Statistiques par catégorie
+
+* **GET** `/api/stats/societe/{id}/depenses-par-nature` - Répartition des dépenses par nature
+* **GET** `/api/stats/societe/{id}/recettes-par-nature` - Répartition des recettes par nature
+* **GET** `/api/stats/societe/{id}/balance` - Balance recettes/dépenses
+
+### Comparaisons et tendances
+
+* **GET** `/api/stats/societe/{id}/comparaison-mensuelle` - Comparaison mois par mois
+* **GET** `/api/stats/societe/{id}/tendances` - Analyse des tendances
+* **GET** `/api/stats/societe/{id}/previsions` - Prévisions basées sur l'historique
+
+---
+
+## 📁 Gestion des Fichiers et Exports
+
+### Exports
+
+* **GET** `/api/exports/operations/csv` - Export des opérations en CSV
+* **GET** `/api/exports/operations/excel` - Export des opérations en Excel
+* **GET** `/api/exports/operations/pdf` - Export des opérations en PDF
+
+### Imports
+
+* **POST** `/api/imports/operations/csv` - Import d'opérations depuis CSV
+* **POST** `/api/imports/operations/excel` - Import d'opérations depuis Excel
+
+### Justificatifs
+
+* **POST** `/api/operations/{id}/fichiers` - Ajouter un fichier à une opération
+* **GET** `/api/operations/{id}/fichiers` - Lister les fichiers d'une opération
+* **DELETE** `/api/operations/{operationId}/fichiers/{fichierId}` - Supprimer un fichier
+
+---
+
+## 🔧 Endpoints d'Administration
+
+### Gestion système
+
+* **GET** `/api/admin/system/health` - État de santé du système
+* **GET** `/api/admin/system/metrics` - Métriques système
+* **GET** `/api/admin/system/logs` - Logs système (**Admin** uniquement)
+
+### Gestion des données
+
+* **POST** `/api/admin/backup` - Créer une sauvegarde
+* **POST** `/api/admin/restore` - Restaurer une sauvegarde
+* **DELETE** `/api/admin/cleanup` - Nettoyer les données obsolètes
+
+### Paramètres globaux
+
+* **GET** `/api/admin/settings` - Récupérer les paramètres globaux
+* **PUT** `/api/admin/settings` - Modifier les paramètres globaux
+
+---
+
+## 🎯 Endpoints Utilitaires
+
+### Validation et vérification
+
+* **POST** `/api/utils/validate-email` - Valider un email
+* **GET** `/api/utils/check-societe-name` - Vérifier la disponibilité d'un nom de société
+* **GET** `/api/utils/currencies` - Lister les devises supportées
+
+### Recherche globale
+
+* **GET** `/api/search` - Recherche globale dans l'application
+* **GET** `/api/search/operations` - Recherche spécifique aux opérations
+* **GET** `/api/search/responsables` - Recherche spécifique aux responsables
+
+### Notifications
+
+* **GET** `/api/notifications` - Lister les notifications de l'utilisateur
+* **PUT** `/api/notifications/{id}/read` - Marquer une notification comme lue
+* **DELETE** `/api/notifications/{id}` - Supprimer une notification
+
+---
+
+## 📋 Paramètres de requête communs
+
+### Pagination
+
+* `page` : Numéro de page (défaut : 0)
+* `size` : Taille de page (défaut : 20)
+* `sort` : Critère de tri (ex: `date,desc`)
+
+### Filtres généraux
+
+* `search` : Recherche textuelle
+* `active` : Filtrer les éléments actifs/inactifs
+* `dateDebut` : Date de début (format ISO)
+* `dateFin` : Date de fin (format ISO)
+
+### Formats de réponse
+
+* `format` : Format de réponse (json, csv, excel, pdf)
+* `lang` : Langue de la réponse (fr, en)
+
+---
+
+## 🔒 Niveaux d'autorisation requis
+
+### Rôles suggérés
+
+* **ADMIN** : Accès complet à toutes les fonctionnalités
+* **MANAGER** : Gestion d'une société et de ses utilisateurs
+* **COMPTABLE** : Gestion des opérations financières
+* **UTILISATEUR** : Consultation et saisie limitée
+* **LECTEUR** : Consultation seule
+
+### Matrice des permissions
+
+* Les endpoints d'administration nécessitent le rôle **ADMIN**
+* Les endpoints de gestion de société nécessitent **MANAGER** ou **ADMIN**
+* Les endpoints de saisie d'opérations nécessitent **COMPTABLE** ou supérieur
+* Les endpoints de consultation nécessitent **UTILISATEUR** ou supérieur
+
+---
+
+## 📝 Notes d'implémentation
+
+### Sécurité
+
+* Tous les endpoints nécessitent une authentification JWT sauf `/api/auth/login`
+* Validation des permissions basée sur les rôles et l'appartenance aux sociétés
+* Utilisation d'UUID pour tous les identifiants
+
+### Performance
+
+* Implémentation de la pagination sur tous les endpoints de listing
+* Cache Redis recommandé pour les statistiques fréquemment consultées
+* Indexation des champs de recherche en base de données
+
+### Versioning
+
+* Préfixe `/api/v1` recommandé pour le versioning
+* Headers `Accept` et `Content-Type` obligatoires
+* Support du format JSON par défaut
