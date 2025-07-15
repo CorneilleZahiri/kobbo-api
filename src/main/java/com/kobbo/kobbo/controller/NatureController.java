@@ -3,7 +3,7 @@ package com.kobbo.kobbo.controller;
 import com.kobbo.kobbo.dto.nature.NatureDto;
 import com.kobbo.kobbo.dto.nature.RegisterNatureRequest;
 import com.kobbo.kobbo.entity.Nature;
-import com.kobbo.kobbo.mapper.nature.NatureMapper;
+import com.kobbo.kobbo.mapper.NatureMapper;
 import com.kobbo.kobbo.service.NatureService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

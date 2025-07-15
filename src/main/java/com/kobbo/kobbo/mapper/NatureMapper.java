@@ -1,4 +1,4 @@
-package com.kobbo.kobbo.mapper.nature;
+package com.kobbo.kobbo.mapper;
 
 import com.kobbo.kobbo.dto.nature.NatureDto;
 import com.kobbo.kobbo.dto.nature.RegisterNatureRequest;
