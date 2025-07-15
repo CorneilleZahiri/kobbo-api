@@ -33,7 +33,7 @@ L'application repose sur une base de données MySQL structurée comme suit :
 
 📊 Un diagramme UML est fourni pour visualiser les relations entre les entités :
 
-![Diagramme UML - Kobbo](./Diagramme_kobbo.png)
+![Diagramme UML - Kobbo](Analyse_kobbo.png)
 
 ---
 
