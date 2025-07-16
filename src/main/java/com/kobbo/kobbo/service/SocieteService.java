@@ -1,5 +1,6 @@
 package com.kobbo.kobbo.service;
 
+import com.kobbo.kobbo.dto.societe.RegisterSocieteRequest;
 import com.kobbo.kobbo.dto.societe.SocieteDto;
 import com.kobbo.kobbo.entity.Societe;
 import com.kobbo.kobbo.exception.DuplicateEntryException;
@@ -23,7 +24,7 @@ public class SocieteService {
     @Transactional
     public SocieteDto creerSociete(Societe societe) {
         //Contrôler le doublon sur l'email
-        Societe societeExiste = societeRepository.findByEmail(societe.getEmail()).orElse(null);
+        Societe societeExiste = getSocieteByEmail(societe.getEmail());
 
         if (societeExiste != null) {
             throw new DuplicateEntryException("Société", societeExiste.getEmail());
@@ -40,13 +41,39 @@ public class SocieteService {
     }
 
     @Transactional
-    public SocieteDto getSocieteById(UUID id) {
+    public Societe getSocieteById(UUID id) {
         Societe societe = societeRepository.findById(id).orElse(null);
 
         if (societe == null) {
             throw new EntityNotFoundException("Société", id.toString());
         }
 
-        return societeMapper.toDto(societe);
+        return societe;
+    }
+
+    @Transactional
+    public Societe getSocieteByEmail(String email) {
+        //Contrôler le doublon sur l'email
+        return societeRepository.findByEmail(email).orElse(null);
+    }
+
+    @Transactional
+    public Societe updateSociete(UUID id, RegisterSocieteRequest request) {
+        // Controller l'existence de la société
+        Societe societe = getSocieteById(id);
+        if (societe == null) {
+            throw new EntityNotFoundException("Société", id.toString());
+        }
+
+        //Contrôler le doublon sur l'email
+        Societe societeDuplicated = getSocieteByEmail(request.getEmail());
+
+        if (societeDuplicated != null && !societeDuplicated.getId().equals(id)) {
+            throw new DuplicateEntryException("Société", societeDuplicated.getEmail());
+        }
+
+        societeMapper.update(request, societe);
+
+        return societeRepository.save(societe);
     }
 }

@@ -5,6 +5,7 @@ import com.kobbo.kobbo.dto.societe.SocieteDto;
 import com.kobbo.kobbo.entity.Societe;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface SocieteMapper {
@@ -13,4 +14,6 @@ public interface SocieteMapper {
     @Mapping(target = "id", ignore = true)
     Societe toEntity(RegisterSocieteRequest request);
 
+    @Mapping(target = "id", ignore = true)
+    void update(RegisterSocieteRequest request, @MappingTarget Societe societe);
 }
