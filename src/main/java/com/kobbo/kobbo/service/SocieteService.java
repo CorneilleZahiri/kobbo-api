@@ -6,9 +6,10 @@ import com.kobbo.kobbo.exception.DuplicateEntryException;
 import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.repository.SocieteRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -16,6 +17,7 @@ public class SocieteService {
     private final SocieteRepository societeRepository;
     private final SocieteMapper societeMapper;
 
+    @Transactional
     public SocieteDto creerSociete(Societe societe) {
         //Contrôler le doublon sur l'email
         Societe societeExiste = societeRepository.findByEmail(societe.getEmail()).orElse(null);
@@ -28,9 +30,9 @@ public class SocieteService {
 
         return societeMapper.toDto(societeSaved);
     }
-
-
-    public List<SocieteDto> listeSociete() {
-        return societeRepository.findAll().stream().map(societeMapper::toDto).toList();
+    
+    @Transactional
+    public Page<SocieteDto> listeSociete(Pageable pageable) {
+        return societeRepository.findAll(pageable).map(societeMapper::toDto);
     }
 }
