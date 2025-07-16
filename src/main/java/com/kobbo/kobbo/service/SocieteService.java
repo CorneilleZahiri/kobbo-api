@@ -3,6 +3,7 @@ package com.kobbo.kobbo.service;
 import com.kobbo.kobbo.dto.societe.SocieteDto;
 import com.kobbo.kobbo.entity.Societe;
 import com.kobbo.kobbo.exception.DuplicateEntryException;
+import com.kobbo.kobbo.exception.EntityNotFoundException;
 import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.repository.SocieteRepository;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -30,9 +33,20 @@ public class SocieteService {
 
         return societeMapper.toDto(societeSaved);
     }
-    
+
     @Transactional
     public Page<SocieteDto> listeSociete(Pageable pageable) {
         return societeRepository.findAll(pageable).map(societeMapper::toDto);
+    }
+
+    @Transactional
+    public SocieteDto getSocieteById(UUID id) {
+        Societe societe = societeRepository.findById(id).orElse(null);
+
+        if (societe == null) {
+            throw new EntityNotFoundException("Société", id.toString());
+        }
+
+        return societeMapper.toDto(societe);
     }
 }
