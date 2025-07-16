@@ -6,12 +6,16 @@ import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.service.SocieteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -22,8 +26,23 @@ public class SocieteController {
     private final SocieteMapper societeMapper;
 
     @GetMapping
-    public List<SocieteDto> listeSociete() {
-        return societeService.listeSociete();
+    public Page<SocieteDto> listeSociete(@RequestParam(required = false, name = "page", defaultValue = "0") int page,
+                                         @RequestParam(required = false, name = "size", defaultValue = "2") int size,
+                                         @RequestParam(required = false, name = "sort", defaultValue = "") String sortBy,
+                                         @RequestParam(required = false, name = "direction", defaultValue = "asc") String direction) {
+
+        if (!Set.of("raisonSociale", "email").contains(sortBy.toLowerCase())) {
+            sortBy = "raisonSociale"; // Au cas où le frontEnd saisie une autre value que prévue
+        }
+
+        if (!Set.of("asc", "desc").contains(direction.toLowerCase())) {
+            direction = "asc"; // Au cas où le frontEnd saisie une autre value que prévue
+        }
+        
+        Sort.Direction dir = Sort.Direction.fromString(direction);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sortBy));
+
+        return societeService.listeSociete(pageable);
     }
 
     @PostMapping
