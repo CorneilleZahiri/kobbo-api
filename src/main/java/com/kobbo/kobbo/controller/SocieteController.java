@@ -28,10 +28,10 @@ public class SocieteController {
     private final SocieteMapper societeMapper;
 
     @PostMapping
-    public ResponseEntity<SocieteDto> creerSociete(@Valid @RequestBody RegisterSocieteRequest request,
-                                                   UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<SocieteDto> createSociete(@Valid @RequestBody RegisterSocieteRequest request,
+                                                    UriComponentsBuilder uriComponentsBuilder) {
         //Convertir le request en entité
-        SocieteDto societeDto = societeService.creerSociete(societeMapper.toEntity(request));
+        SocieteDto societeDto = societeService.createSociete(societeMapper.toEntity(request));
 
 
         //Générer le lien (location)
@@ -44,10 +44,10 @@ public class SocieteController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SocieteDto>> listeSociete(@RequestParam(required = false, name = "page", defaultValue = "0") int page,
-                                                         @RequestParam(required = false, name = "size", defaultValue = "2") int size,
-                                                         @RequestParam(required = false, name = "sort", defaultValue = "raisonSociale") String sortBy,
-                                                         @RequestParam(required = false, name = "direction", defaultValue = "asc") String direction) {
+    public ResponseEntity<Page<SocieteDto>> listSociete(@RequestParam(required = false, name = "page", defaultValue = "0") int page,
+                                                        @RequestParam(required = false, name = "size", defaultValue = "15") int size,
+                                                        @RequestParam(required = false, name = "sort", defaultValue = "raisonSociale") String sortBy,
+                                                        @RequestParam(required = false, name = "direction", defaultValue = "asc") String direction) {
 
         if (!Set.of("raisonSociale", "email").contains(sortBy.toLowerCase())) {
             sortBy = "raisonSociale"; // Au cas où le frontEnd saisie une autre value que prévue
@@ -60,21 +60,28 @@ public class SocieteController {
         Sort.Direction dir = Sort.Direction.fromString(direction);
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sortBy));
 
-        return ResponseEntity.ok(societeService.listeSociete(pageable));
+        return ResponseEntity.ok(societeService.listSociete(pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SocieteDto> getSocieteById(@PathVariable UUID id) {
         Societe societe = societeService.getSocieteById(id);
-        
+
         return ResponseEntity.ok(societeMapper.toDto(societe));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SocieteDto> modifierSociete(@PathVariable UUID id,
-                                                      @RequestBody RegisterSocieteRequest request) {
+    public ResponseEntity<SocieteDto> updateSociete(@PathVariable UUID id,
+                                                    @RequestBody RegisterSocieteRequest request) {
         Societe societe = societeService.updateSociete(id, request);
 
         return ResponseEntity.ok(societeMapper.toDto(societe));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSociete(@PathVariable(name = "id") UUID id) {
+        societeService.deleteSociete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
