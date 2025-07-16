@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class KobboApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KobboApplication.class, args);
-		System.out.println("Kobbo started");
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(KobboApplication.class, args);
+        System.out.println("Kobbo started");
+    }
 
 }

@@ -7,13 +7,11 @@ import com.kobbo.kobbo.service.SocieteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 
 @RestController
@@ -22,6 +20,11 @@ import java.net.URI;
 public class SocieteController {
     private final SocieteService societeService;
     private final SocieteMapper societeMapper;
+
+    @GetMapping
+    public List<SocieteDto> listeSociete() {
+        return societeService.listeSociete();
+    }
 
     @PostMapping
     public ResponseEntity<SocieteDto> creerSociete(@Valid @RequestBody RegisterSocieteRequest request,

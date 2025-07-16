@@ -8,6 +8,8 @@ import com.kobbo.kobbo.repository.SocieteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class SocieteService {
@@ -25,5 +27,10 @@ public class SocieteService {
         Societe societeSaved = societeRepository.save(societe);
 
         return societeMapper.toDto(societeSaved);
+    }
+
+
+    public List<SocieteDto> listeSociete() {
+        return societeRepository.findAll().stream().map(societeMapper::toDto).toList();
     }
 }
