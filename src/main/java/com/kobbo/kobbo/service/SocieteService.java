@@ -22,7 +22,7 @@ public class SocieteService {
     private final SocieteMapper societeMapper;
 
     @Transactional
-    public SocieteDto creerSociete(Societe societe) {
+    public SocieteDto createSociete(Societe societe) {
         //Contrôler le doublon sur l'email
         Societe societeExiste = getSocieteByEmail(societe.getEmail());
 
@@ -36,7 +36,7 @@ public class SocieteService {
     }
 
     @Transactional
-    public Page<SocieteDto> listeSociete(Pageable pageable) {
+    public Page<SocieteDto> listSociete(Pageable pageable) {
         return societeRepository.findAll(pageable).map(societeMapper::toDto);
     }
 
@@ -75,5 +75,16 @@ public class SocieteService {
         societeMapper.update(request, societe);
 
         return societeRepository.save(societe);
+    }
+
+    @Transactional
+    public void deleteSociete(UUID id) {
+        // Rechercher la société
+        Societe societe = getSocieteById(id);
+        if (societe == null) {
+            throw new EntityNotFoundException("Société", id.toString());
+        }
+
+        societeRepository.delete(societe);
     }
 }
