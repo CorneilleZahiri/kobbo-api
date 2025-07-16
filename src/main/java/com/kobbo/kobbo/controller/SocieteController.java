@@ -2,6 +2,7 @@ package com.kobbo.kobbo.controller;
 
 import com.kobbo.kobbo.dto.societe.RegisterSocieteRequest;
 import com.kobbo.kobbo.dto.societe.SocieteDto;
+import com.kobbo.kobbo.entity.Societe;
 import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.service.SocieteService;
 import jakarta.validation.Valid;
@@ -64,6 +65,16 @@ public class SocieteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SocieteDto> getSocieteById(@PathVariable UUID id) {
-        return ResponseEntity.ok(societeService.getSocieteById(id));
+        Societe societe = societeService.getSocieteById(id);
+        
+        return ResponseEntity.ok(societeMapper.toDto(societe));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SocieteDto> modifierSociete(@PathVariable UUID id,
+                                                      @RequestBody RegisterSocieteRequest request) {
+        Societe societe = societeService.updateSociete(id, request);
+
+        return ResponseEntity.ok(societeMapper.toDto(societe));
     }
 }
