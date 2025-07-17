@@ -20,4 +20,8 @@ public class Nature {
 
     @Column(name = "intitule")
     private String intitule;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "societes_id")
+    private Societe societe;
 }

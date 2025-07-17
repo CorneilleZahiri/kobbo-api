@@ -8,8 +8,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface NatureMapper {
+    @Mapping(source = "societe.id", target = "societeDto.id")
     NatureDto toDto(Nature nature);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "societe", ignore = true)
     Nature toEntity(RegisterNatureRequest natureRequest);
 }

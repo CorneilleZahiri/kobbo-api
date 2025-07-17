@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -28,4 +30,7 @@ public class Societe {
 
     @Column(name = "adresse")
     private String adresse;
+
+    @OneToMany(mappedBy = "societe")
+    private Set<Nature> natures = new LinkedHashSet<>();
 }

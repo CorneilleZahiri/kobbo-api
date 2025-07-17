@@ -12,8 +12,10 @@ public interface SocieteMapper {
     SocieteDto toDto(Societe societe);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "natures", ignore = true)
     Societe toEntity(RegisterSocieteRequest request);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "natures", ignore = true)
     void update(RegisterSocieteRequest request, @MappingTarget Societe societe);
 }
