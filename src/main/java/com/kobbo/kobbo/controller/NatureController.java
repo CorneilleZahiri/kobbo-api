@@ -61,7 +61,12 @@ public class NatureController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sortBy));
 
         return ResponseEntity.ok(natureService.getAllNatureBySocieteId(id, pageable));
+    }
 
+    @GetMapping("/{societeId}/natures/{natureId}")
+    public ResponseEntity<NatureDto> getNatureByIdAndSocieteId(@PathVariable(name = "natureId") Long natureId,
+                                                               @PathVariable(name = "societeId") UUID societeId) {
+        return ResponseEntity.ok(natureService.getNatureByIdAndSocieteId(natureId, societeId));
     }
 
 
