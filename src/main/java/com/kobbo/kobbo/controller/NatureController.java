@@ -69,5 +69,10 @@ public class NatureController {
         return ResponseEntity.ok(natureService.getNatureByIdAndSocieteId(natureId, societeId));
     }
 
-
+    @PutMapping("/{societeId}/natures/{natureId}")
+    public ResponseEntity<NatureDto> modifyNatureByIdAndSocieteId(@PathVariable(name = "natureId") Long natureId,
+                                                                  @PathVariable(name = "societeId") UUID societeId,
+                                                                  @Valid @RequestBody RegisterNatureRequest request) {
+        return ResponseEntity.ok(natureService.modifyNatureByIdAndSocieteId(natureId, societeId, request));
+    }
 }

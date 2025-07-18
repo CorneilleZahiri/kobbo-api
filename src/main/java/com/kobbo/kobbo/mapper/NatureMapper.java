@@ -6,6 +6,7 @@ import com.kobbo.kobbo.dto.nature.response.NatureResponse;
 import com.kobbo.kobbo.entity.Nature;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface NatureMapper {
@@ -17,4 +18,8 @@ public interface NatureMapper {
     Nature toEntity(RegisterNatureRequest natureRequest);
 
     NatureResponse toNatureResponse(Nature nature);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "societe", ignore = true)
+    void update(RegisterNatureRequest natureRequest, @MappingTarget Nature nature);
 }
