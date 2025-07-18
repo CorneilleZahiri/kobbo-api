@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface NatureRepository extends JpaRepository<Nature, Long> {
+    Optional<Nature> findByIdAndSocieteId(Long natureId, UUID societeId);
+
     Optional<Nature> findByIntituleAndSocieteId(String intitule, UUID id);
 
     Page<Nature> findBySocieteId(UUID id, Pageable pageable);
