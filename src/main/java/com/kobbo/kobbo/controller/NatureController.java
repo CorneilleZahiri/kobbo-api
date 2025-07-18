@@ -3,9 +3,7 @@ package com.kobbo.kobbo.controller;
 import com.kobbo.kobbo.dto.nature.request.RegisterNatureRequest;
 import com.kobbo.kobbo.dto.nature.response.NatureDto;
 import com.kobbo.kobbo.dto.societe.response.SocieteNatureDto;
-import com.kobbo.kobbo.mapper.NatureMapper;
 import com.kobbo.kobbo.service.NatureService;
-import com.kobbo.kobbo.service.SocieteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -24,8 +22,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class NatureController {
     private final NatureService natureService;
-    private final SocieteService societeService;
-    private final NatureMapper natureMapper;
 
     @PostMapping("/{id}/natures")
     public ResponseEntity<NatureDto> createNature(@PathVariable(name = "id") UUID id,
@@ -80,7 +76,7 @@ public class NatureController {
     public ResponseEntity<Void> deleteNature(@PathVariable(name = "natureId") Long natureId,
                                              @PathVariable(name = "societeId") UUID societeId) {
         natureService.deleteNature(natureId, societeId);
-        
+
         return ResponseEntity.noContent().build();
     }
 }
