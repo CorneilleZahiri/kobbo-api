@@ -75,4 +75,12 @@ public class NatureController {
                                                                   @Valid @RequestBody RegisterNatureRequest request) {
         return ResponseEntity.ok(natureService.modifyNatureByIdAndSocieteId(natureId, societeId, request));
     }
+
+    @DeleteMapping("/{societeId}/natures/{natureId}")
+    public ResponseEntity<Void> deleteNature(@PathVariable(name = "natureId") Long natureId,
+                                             @PathVariable(name = "societeId") UUID societeId) {
+        natureService.deleteNature(natureId, societeId);
+        
+        return ResponseEntity.noContent().build();
+    }
 }

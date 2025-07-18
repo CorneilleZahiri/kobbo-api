@@ -97,4 +97,18 @@ public class NatureService {
 
         return natureMapper.toDto(natureRepository.save(nature));
     }
+
+    public void deleteNature(Long natureId, UUID societeId) {
+        //Vérifier l'existence de Société
+        Societe societe = societeService.getSocieteById(societeId);
+
+        //Vérifier que la nature existe
+        Nature nature = natureRepository.findByIdAndSocieteId(natureId, societeId).orElse(null);
+        if (nature == null) {
+            throw new EntityNotFoundException("Cette nature",
+                    societeId.toString() + " (" + societe.getRaisonSociale() + ")");
+        }
+
+        natureRepository.deleteById(nature.getId());
+    }
 }
