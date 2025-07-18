@@ -1,4 +1,4 @@
-package com.kobbo.kobbo.dto.nature;
+package com.kobbo.kobbo.dto.nature.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

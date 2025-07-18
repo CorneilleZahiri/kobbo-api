@@ -1,4 +1,4 @@
-package com.kobbo.kobbo.dto.societe;
+package com.kobbo.kobbo.dto.societe.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

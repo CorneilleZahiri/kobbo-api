@@ -1,4 +1,4 @@
-package com.kobbo.kobbo.dto.societe;
+package com.kobbo.kobbo.dto.societe.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +16,6 @@ public class RegisterSocieteRequest {
     @NotBlank(message = "L'email est vide.")
     @Email(message = "Le format de l'adresse email est incorrecte.")
     private String email;
-    
+
     private String adresse;
 }

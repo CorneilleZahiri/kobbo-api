@@ -1,7 +1,7 @@
 package com.kobbo.kobbo.controller;
 
-import com.kobbo.kobbo.dto.societe.RegisterSocieteRequest;
-import com.kobbo.kobbo.dto.societe.SocieteDto;
+import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
+import com.kobbo.kobbo.dto.societe.response.SocieteDto;
 import com.kobbo.kobbo.entity.Societe;
 import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.service.SocieteService;
