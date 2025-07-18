@@ -1,7 +1,8 @@
 package com.kobbo.kobbo.mapper;
 
-import com.kobbo.kobbo.dto.nature.NatureDto;
-import com.kobbo.kobbo.dto.nature.RegisterNatureRequest;
+import com.kobbo.kobbo.dto.nature.request.RegisterNatureRequest;
+import com.kobbo.kobbo.dto.nature.response.NatureDto;
+import com.kobbo.kobbo.dto.nature.response.NatureResponse;
 import com.kobbo.kobbo.entity.Nature;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,4 +15,6 @@ public interface NatureMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "societe", ignore = true)
     Nature toEntity(RegisterNatureRequest natureRequest);
+
+    NatureResponse toNatureResponse(Nature nature);
 }

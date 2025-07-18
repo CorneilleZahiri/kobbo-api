@@ -1,7 +1,7 @@
 package com.kobbo.kobbo.mapper;
 
-import com.kobbo.kobbo.dto.societe.RegisterSocieteRequest;
-import com.kobbo.kobbo.dto.societe.SocieteDto;
+import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
+import com.kobbo.kobbo.dto.societe.response.SocieteDto;
 import com.kobbo.kobbo.entity.Societe;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

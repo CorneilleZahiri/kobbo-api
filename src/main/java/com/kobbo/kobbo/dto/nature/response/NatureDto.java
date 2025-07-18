@@ -1,6 +1,6 @@
-package com.kobbo.kobbo.dto.nature;
+package com.kobbo.kobbo.dto.nature.response;
 
-import com.kobbo.kobbo.dto.societe.SocieteDto;
+import com.kobbo.kobbo.dto.societe.response.SocieteDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

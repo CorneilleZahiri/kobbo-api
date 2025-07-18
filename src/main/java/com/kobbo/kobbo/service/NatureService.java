@@ -1,13 +1,19 @@
 package com.kobbo.kobbo.service;
 
-import com.kobbo.kobbo.dto.nature.NatureDto;
-import com.kobbo.kobbo.dto.nature.RegisterNatureRequest;
+import com.kobbo.kobbo.dto.nature.request.RegisterNatureRequest;
+import com.kobbo.kobbo.dto.nature.response.NatureDto;
+import com.kobbo.kobbo.dto.nature.response.NatureResponse;
+import com.kobbo.kobbo.dto.societe.response.SocieteDto;
+import com.kobbo.kobbo.dto.societe.response.SocieteNatureDto;
 import com.kobbo.kobbo.entity.Nature;
 import com.kobbo.kobbo.entity.Societe;
 import com.kobbo.kobbo.exception.DuplicateEntryException;
 import com.kobbo.kobbo.mapper.NatureMapper;
+import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.repository.NatureRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,6 +23,7 @@ import java.util.UUID;
 public class NatureService {
     private final NatureRepository natureRepository;
     private final NatureMapper natureMapper;
+    private final SocieteMapper societeMapper;
     private final SocieteService societeService;
 
     public NatureDto createNature(RegisterNatureRequest request, UUID societeID) {
@@ -24,7 +31,7 @@ public class NatureService {
         Societe societe = societeService.getSocieteById(societeID);
 
         //Contrôler le doublon sur l'intitulé
-        if (getNatureByIntitule(request.getIntitule(), societe) != null) {
+        if (getNatureByIntituleAndSocieteId(request.getIntitule(), societe.getId()) != null) {
             throw new DuplicateEntryException("La nature " + request.getIntitule(), societe.getRaisonSociale());
         }
 
@@ -34,7 +41,18 @@ public class NatureService {
         return natureMapper.toDto(natureRepository.save(nature));
     }
 
-    public Nature getNatureByIntitule(String intitule, Societe societe) {
-        return natureRepository.findByIntituleAndSociete(intitule, societe).orElse(null);
+    public Nature getNatureByIntituleAndSocieteId(String intitule, UUID id) {
+        return natureRepository.findByIntituleAndSocieteId(intitule, id).orElse(null);
+    }
+
+    public SocieteNatureDto getAllNatureBySocieteId(UUID id, Pageable pageable) {
+        //Vérifier l'existence de Société
+        Societe societe = societeService.getSocieteById(id);
+
+        SocieteDto societeDto = societeMapper.toDto(societe);
+
+        Page<NatureResponse> natureResponsePage = natureRepository.findBySocieteId(id, pageable).map(natureMapper::toNatureResponse);
+
+        return new SocieteNatureDto(societeDto, natureResponsePage);
     }
 }
