@@ -72,7 +72,7 @@ public class SocieteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SocieteDto> updateSociete(@PathVariable UUID id,
-                                                    @RequestBody RegisterSocieteRequest request) {
+                                                    @Valid @RequestBody RegisterSocieteRequest request) {
         Societe societe = societeService.updateSociete(id, request);
 
         return ResponseEntity.ok(societeMapper.toDto(societe));

@@ -67,10 +67,34 @@ public class NatureService {
 
         Nature nature = natureRepository.findByIdAndSocieteId(natureId, societeId).orElse(null);
         if (nature == null) {
-            throw new EntityNotFoundException("Cette nature", societeId.toString() + " (" + societe.getRaisonSociale() + ")");
+            throw new EntityNotFoundException("Cette nature",
+                    societeId.toString() + " (" + societe.getRaisonSociale() + ")");
         }
 
         return natureMapper.toDto(nature);
     }
 
+    public NatureDto modifyNatureByIdAndSocieteId(Long natureId, UUID societeId, RegisterNatureRequest request) {
+        //Vérifier l'existence de Société
+        Societe societe = societeService.getSocieteById(societeId);
+
+        //Vérifier que la nature existe
+        Nature nature = natureRepository.findByIdAndSocieteId(natureId, societeId).orElse(null);
+        if (nature == null) {
+            throw new EntityNotFoundException("Cette nature",
+                    societeId.toString() + " (" + societe.getRaisonSociale() + ")");
+        }
+
+        //Contrôler le doublon sur l'intitulé dans cette société
+        Nature natureDuplicated = getNatureByIntituleAndSocieteId(request.getIntitule(), societe.getId());
+
+        if (natureDuplicated != null && !natureDuplicated.getId().equals(natureId)) {
+            throw new DuplicateEntryException("La nature " + request.getIntitule(),
+                    societeId.toString() + " (" + societe.getRaisonSociale() + ")");
+        }
+
+        natureMapper.update(request, nature);
+
+        return natureMapper.toDto(natureRepository.save(nature));
+    }
 }
