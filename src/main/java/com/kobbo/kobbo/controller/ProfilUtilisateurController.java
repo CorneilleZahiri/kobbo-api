@@ -3,6 +3,8 @@ package com.kobbo.kobbo.controller;
 import com.kobbo.kobbo.dto.profilUtilisateur.request.RegisterProfilUtilisateurRequest;
 import com.kobbo.kobbo.dto.profilUtilisateur.response.ProfilUtilisateurDto;
 import com.kobbo.kobbo.dto.societe.response.SocieteProfilUtilisateurDto;
+import com.kobbo.kobbo.entity.ProfilUtilisateur;
+import com.kobbo.kobbo.mapper.ProfilUtilisateurMapper;
 import com.kobbo.kobbo.service.ProfilUtilisateurService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ProfilUtilisateurController {
     private final ProfilUtilisateurService profilUtilisateurService;
+    private final ProfilUtilisateurMapper profilUtilisateurMapper;
 
     @PostMapping("/{id}/profils")
     public ResponseEntity<ProfilUtilisateurDto> createProfilUtilisateur(@PathVariable(name = "id") UUID societeId,
@@ -61,7 +64,8 @@ public class ProfilUtilisateurController {
     @GetMapping("/{societeId}/profiles/{profileId}")
     public ResponseEntity<ProfilUtilisateurDto> getProfilUtilisateurByIdAndSocieteId(@PathVariable(name = "profileId") Long profileId,
                                                                                      @PathVariable(name = "societeId") UUID societeId) {
-        return ResponseEntity.ok(profilUtilisateurService.getProfilUtilisateurByIdAndSocieteId(profileId, societeId));
+        ProfilUtilisateur profilUtilisateur = profilUtilisateurService.getProfilUtilisateurByIdAndSocieteId(profileId, societeId);
+        return ResponseEntity.ok(profilUtilisateurMapper.toDto(profilUtilisateur));
     }
 
     @PutMapping("/{societeId}/profiles/{profileId}")

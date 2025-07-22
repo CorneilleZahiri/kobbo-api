@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public class ResponsableService {
     private final SocieteService societeService;
     private final ResponsableRepository responsableRepository;
 
+    @Transactional
     public ResponsableDto createResponsable(RegisterResponsableRequest request, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -38,6 +40,7 @@ public class ResponsableService {
         return responsableMapper.toDto(responsableRepository.save(responsable));
     }
 
+    @Transactional
     public SocieteResponsableDto getAllResponsableBySocieteId(UUID SocieteId, Pageable pageable) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(SocieteId);
@@ -51,6 +54,7 @@ public class ResponsableService {
         return new SocieteResponsableDto(societeDto, responsableResponsePage);
     }
 
+    @Transactional
     public ResponsableDto getResponsableByIdAndSocieteId(UUID responsableId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -64,6 +68,7 @@ public class ResponsableService {
         return responsableMapper.toDto(responsable);
     }
 
+    @Transactional
     public ResponsableDto modifyResponsableByIdAndSocieteId(UUID responsableId,
                                                             UUID societeId,
                                                             RegisterResponsableRequest request) {
@@ -82,6 +87,7 @@ public class ResponsableService {
         return responsableMapper.toDto(responsableRepository.save(responsable));
     }
 
+    @Transactional
     public void deleteResponsable(UUID responsableId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);

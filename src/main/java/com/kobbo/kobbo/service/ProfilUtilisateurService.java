@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class ProfilUtilisateurService {
     private final SocieteMapper societeMapper;
     private final SocieteService societeService;
 
+    @Transactional
     public ProfilUtilisateurDto createProfilUtilisateur(RegisterProfilUtilisateurRequest request, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -43,10 +45,12 @@ public class ProfilUtilisateurService {
         return profilUtilisateurMapper.toDto(profilUtilisateurRepository.save(profilUtilisateur));
     }
 
+    @Transactional
     public ProfilUtilisateur getProfilUtilisateurByLibelleAndSocieteId(String intitule, UUID id) {
         return profilUtilisateurRepository.findByLibelleAndSocieteId(intitule, id).orElse(null);
     }
 
+    @Transactional
     public SocieteProfilUtilisateurDto getAllProfilUtilisateurBySocieteId(UUID societeId, Pageable pageable) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -60,7 +64,8 @@ public class ProfilUtilisateurService {
         return new SocieteProfilUtilisateurDto(societeDto, profilUtilisateurResponsePage);
     }
 
-    public ProfilUtilisateurDto getProfilUtilisateurByIdAndSocieteId(Long profilUtilisateurId, UUID societeId) {
+    @Transactional
+    public ProfilUtilisateur getProfilUtilisateurByIdAndSocieteId(Long profilUtilisateurId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
@@ -70,9 +75,10 @@ public class ProfilUtilisateurService {
                     societeId.toString() + " (" + societe.getRaisonSociale() + ")");
         }
 
-        return profilUtilisateurMapper.toDto(profilUtilisateur);
+        return profilUtilisateur;
     }
 
+    @Transactional
     public ProfilUtilisateurDto modifyProfilUtilisateurByIdAndSocieteId(Long profilUtilisateurId, UUID societeId, RegisterProfilUtilisateurRequest request) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -97,6 +103,7 @@ public class ProfilUtilisateurService {
         return profilUtilisateurMapper.toDto(profilUtilisateurRepository.save(profilUtilisateur));
     }
 
+    @Transactional
     public void deleteProfilUtilisateur(Long profilUtilisateurId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
