@@ -16,7 +16,7 @@ libelle VARCHAR(50) NOT NULL
 CREATE TABLE utilisateurs(
 id binary(16) primary key not null default(uuid_to_bin(uuid())),
 nom VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE,
+email VARCHAR(255) NOT NULL UNIQUE, --La contrainte d'unicité d'email a été supprimée dans la version 2
 mot_de_passe  VARCHAR(255) NOT NULL,
 profil_utilisateurs_id BIGINT NOT NULL,
 societes_id binary(16),

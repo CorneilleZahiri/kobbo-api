@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class NatureService {
     private final SocieteMapper societeMapper;
     private final SocieteService societeService;
 
+    @Transactional
     public NatureDto createNature(RegisterNatureRequest request, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -43,10 +45,12 @@ public class NatureService {
         return natureMapper.toDto(natureRepository.save(nature));
     }
 
+    @Transactional
     public Nature getNatureByIntituleAndSocieteId(String intitule, UUID id) {
         return natureRepository.findByIntituleAndSocieteId(intitule, id).orElse(null);
     }
 
+    @Transactional
     public SocieteNatureDto getAllNatureBySocieteId(UUID id, Pageable pageable) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(id);
@@ -60,7 +64,7 @@ public class NatureService {
         return new SocieteNatureDto(societeDto, natureResponsePage);
     }
 
-
+    @Transactional
     public NatureDto getNatureByIdAndSocieteId(Long natureId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -74,6 +78,7 @@ public class NatureService {
         return natureMapper.toDto(nature);
     }
 
+    @Transactional
     public NatureDto modifyNatureByIdAndSocieteId(Long natureId, UUID societeId, RegisterNatureRequest request) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
@@ -98,6 +103,7 @@ public class NatureService {
         return natureMapper.toDto(natureRepository.save(nature));
     }
 
+    @Transactional
     public void deleteNature(Long natureId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);

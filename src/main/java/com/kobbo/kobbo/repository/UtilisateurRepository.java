@@ -18,5 +18,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     Optional<Utilisateur> findByEmailAndSocieteId(@Param("email") String email, @Param("societeId") UUID societeId);
 
     @Query("SELECT u FROM Utilisateur u WHERE u.profilUtilisateur.societe.id = :societeId")
-    Page<Utilisateur> findBySocieteId(UUID id, Pageable pageable);
+    Page<Utilisateur> findBySocieteId(@Param("societeId") UUID id, Pageable pageable);
+
+    void deleteById(UUID id);
 }
