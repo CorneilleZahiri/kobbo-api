@@ -9,12 +9,12 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "responsables")
+@Table(name = "tiers")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Responsable {
+public class Tiers {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -23,8 +23,11 @@ public class Responsable {
     @Column(name = "nom")
     private String nom;
 
-    @Column(name = "fonction")
-    private String fonction;
+    @Column(name = "nature")
+    private String nature;
+
+    @Column(name = "contact")
+    private String contact;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "societes_id")

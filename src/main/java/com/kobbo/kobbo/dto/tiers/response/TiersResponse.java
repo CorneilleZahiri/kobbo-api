@@ -1,4 +1,4 @@
-package com.kobbo.kobbo.dto.responsable.response;
+package com.kobbo.kobbo.dto.tiers.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @Builder
-public class ResponsableResponse {
+public class TiersResponse {
     private UUID id;
     private String nom;
-    private String fonction;
+    private String nature;
+    private String contact;
 }

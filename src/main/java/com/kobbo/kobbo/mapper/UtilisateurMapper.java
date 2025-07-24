@@ -22,5 +22,6 @@ public interface UtilisateurMapper {
     UtilisateurResponse toUtilisateurResponse(Utilisateur utilisateur);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(source = "profilUtilisateurId", target = "profilUtilisateur.id")
     void update(UpdateUtilisateurRequest request, @MappingTarget Utilisateur utilisateur);
 }

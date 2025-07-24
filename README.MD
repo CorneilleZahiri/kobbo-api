@@ -165,15 +165,15 @@ Contact : cgbeaga@gmail.com
 ### CRUD Responsables
 
 * **GET** `/api/responsables` - Lister tous les responsables
-* **GET** `/api/responsables/{id}` - Récupérer un responsable par ID
-* **POST** `/api/responsables` - Créer un nouveau responsable
-* **PUT** `/api/responsables/{id}` - Modifier un responsable
-* **DELETE** `/api/responsables/{id}` - Supprimer un responsable
+* **GET** `/api/responsables/{id}` - Récupérer un tiers par ID
+* **POST** `/api/responsables` - Créer un nouveau tiers
+* **PUT** `/api/responsables/{id}` - Modifier un tiers
+* **DELETE** `/api/responsables/{id}` - Supprimer un tiers
 
 ### Responsables par société
 
 * **GET** `/api/societes/{societeId}/responsables` - Lister les responsables d'une société
-* **POST** `/api/societes/{societeId}/responsables` - Créer un responsable pour une société
+* **POST** `/api/societes/{societeId}/responsables` - Créer un tiers pour une société
 
 ---
 
@@ -200,7 +200,7 @@ Contact : cgbeaga@gmail.com
 * **GET** `/api/operations/by-periode` - Opérations par période
     * Paramètres : `societeId`, `debut`, `fin`, `groupBy` (jour/semaine/mois)
 * **GET** `/api/operations/by-nature` - Opérations groupées par nature
-* **GET** `/api/operations/by-responsable` - Opérations groupées par responsable
+* **GET** `/api/operations/by-tiers` - Opérations groupées par tiers
 * **GET** `/api/operations/by-type` - Opérations groupées par type (dépense/recette)
 
 ---
