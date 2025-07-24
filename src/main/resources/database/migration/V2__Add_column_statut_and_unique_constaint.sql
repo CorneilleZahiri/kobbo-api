@@ -15,3 +15,9 @@ ALTER TABLE profil_utilisateurs ADD CONSTRAINT fk_societe_profil FOREIGN KEY (so
 ALTER TABLE profil_utilisateurs ADD CONSTRAINT unique_libelle_societe_id UNIQUE (libelle, societes_id);
 
 ALTER TABLE utilisateurs DROP INDEX email;
+
+ALTER TABLE responsables RENAME TO tiers;
+
+ALTER TABLE tiers ADD COLUMN contact VARCHAR(50);
+
+ALTER TABLE tiers CHANGE fonction nature VARCHAR(255);

@@ -1,4 +1,4 @@
-package com.kobbo.kobbo.dto.responsable.request;
+package com.kobbo.kobbo.dto.tiers.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class RegisterResponsableRequest {
+public class RegisterTiersRequest {
     @NotBlank(message = "Le nom est vide")
     private String nom;
-    
-    private String fonction;
+    private String nature;
+    private String contact;
 }
