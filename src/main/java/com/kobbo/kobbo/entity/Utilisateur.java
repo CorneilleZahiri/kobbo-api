@@ -30,6 +30,6 @@ public class Utilisateur {
     private String motDePasse;
 
     @ManyToOne
-    @JoinColumn(name = "profil_utilisateurs_id")
-    private ProfilUtilisateur profilUtilisateur;
+    @JoinColumn(name = "roles_id")
+    private Role role;
 }

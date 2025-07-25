@@ -1,4 +1,4 @@
-package com.kobbo.kobbo.dto.profilUtilisateur.response;
+package com.kobbo.kobbo.dto.role.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class ProfilUtilisateurResponse {
+public class RoleResponse {
     private Long id;
     private String libelle;
 }

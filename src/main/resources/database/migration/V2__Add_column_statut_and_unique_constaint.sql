@@ -21,3 +21,11 @@ ALTER TABLE responsables RENAME TO tiers;
 ALTER TABLE tiers ADD COLUMN contact VARCHAR(50);
 
 ALTER TABLE tiers CHANGE fonction nature VARCHAR(255);
+
+ALTER TABLE profil_utilisateurs RENAME TO roles;
+
+ALTER TABLE utilisateurs DROP FOREIGN KEY fk_utilisateur_profils;
+
+ALTER TABLE utilisateurs CHANGE profil_utilisateurs_id roles_id bigint NOT NULL;
+
+ALTER TABLE utilisateurs ADD CONSTRAINT fk_utilisateur_roles FOREIGN KEY (roles_id) REFERENCES roles(id) ON DELETE CASCADE;

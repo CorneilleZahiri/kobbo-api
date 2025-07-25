@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "profil_utilisateurs")
+@Table(name = "roles")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfilUtilisateur {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
