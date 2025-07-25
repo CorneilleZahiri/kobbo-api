@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ public class Operation {
     @Column(name = "date_operation")
     private LocalDate dateOperation;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "statut")
     private Statut statut;
 
@@ -36,7 +38,7 @@ public class Operation {
     private String libelle;
 
     @Column(name = "montant")
-    private Long montant;
+    private BigDecimal montant;
 
     @Column(name = "mode_de_payement")
     private String modeDePayement;
