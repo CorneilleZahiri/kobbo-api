@@ -1,6 +1,6 @@
 package com.kobbo.kobbo.dto.utilisateur.response;
 
-import com.kobbo.kobbo.dto.profilUtilisateur.response.ProfilUtilisateurResponse;
+import com.kobbo.kobbo.dto.role.response.RoleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +15,5 @@ public class UtilisateurResponse {
     private String nom;
     private String email;
     private String motDePasse;
-    private ProfilUtilisateurResponse profilUtilisateurResponse;
+    private RoleResponse roleResponse;
 }

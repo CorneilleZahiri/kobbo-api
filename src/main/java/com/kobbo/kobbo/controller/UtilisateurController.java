@@ -4,8 +4,8 @@ import com.kobbo.kobbo.dto.societe.response.SocieteUtilisateurDto;
 import com.kobbo.kobbo.dto.utilisateur.request.RegisterUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.request.UpdateUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurDto;
-import com.kobbo.kobbo.entity.ProfilUtilisateur;
-import com.kobbo.kobbo.service.ProfilUtilisateurService;
+import com.kobbo.kobbo.entity.Role;
+import com.kobbo.kobbo.service.RoleService;
 import com.kobbo.kobbo.service.UtilisateurService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UtilisateurController {
     private final UtilisateurService utilisateurService;
-    private final ProfilUtilisateurService profilUtilisateurService;
+    private final RoleService roleService;
 
     @PostMapping("/{societeId}/profils/{profilId}/utilisateurs")
     public ResponseEntity<UtilisateurDto> createUtilisateur(@PathVariable(name = "societeId") UUID societeId,
@@ -33,11 +33,11 @@ public class UtilisateurController {
                                                             @Valid @RequestBody RegisterUtilisateurRequest request,
                                                             UriComponentsBuilder uriComponentsBuilder) {
 
-        ProfilUtilisateur profilUtilisateur = profilUtilisateurService.getProfilUtilisateurByIdAndSocieteId(profilId, societeId);
-        UtilisateurDto utilisateurDto = utilisateurService.createUtilisateur(request, societeId, profilUtilisateur);
+        Role role = roleService.getRoleByIdAndSocieteId(profilId, societeId);
+        UtilisateurDto utilisateurDto = utilisateurService.createUtilisateur(request, societeId, role);
 
         URI location = uriComponentsBuilder.path("/societes/{societeId}/profils/{profilId}/utilisateurs/{id}")
-                .buildAndExpand(profilUtilisateur.getSociete().getId(), profilUtilisateur.getId(),
+                .buildAndExpand(role.getSociete().getId(), role.getId(),
                         utilisateurDto.getId())
                 .toUri();
 

@@ -6,7 +6,7 @@ import com.kobbo.kobbo.dto.utilisateur.request.RegisterUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.request.UpdateUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurDto;
 import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurResponse;
-import com.kobbo.kobbo.entity.ProfilUtilisateur;
+import com.kobbo.kobbo.entity.Role;
 import com.kobbo.kobbo.entity.Societe;
 import com.kobbo.kobbo.entity.Utilisateur;
 import com.kobbo.kobbo.exception.DuplicateEntryException;
@@ -29,10 +29,10 @@ public class UtilisateurService {
     private final UtilisateurMapper utilisateurMapper;
     private final SocieteMapper societeMapper;
     private final SocieteService societeService;
-    private final ProfilUtilisateurService profilUtilisateurService;
+    private final RoleService roleService;
 
     @Transactional
-    public UtilisateurDto createUtilisateur(RegisterUtilisateurRequest request, UUID societeId, ProfilUtilisateur profilUtilisateur) {
+    public UtilisateurDto createUtilisateur(RegisterUtilisateurRequest request, UUID societeId, Role role) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
@@ -43,7 +43,7 @@ public class UtilisateurService {
         }
 
         Utilisateur utilisateur = utilisateurMapper.toEntity(request);
-        utilisateur.setProfilUtilisateur(profilUtilisateur);
+        utilisateur.setRole(role);
 
         return utilisateurMapper.toDto(utilisateurRepository.save(utilisateur));
     }
@@ -86,7 +86,7 @@ public class UtilisateurService {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
         //Rechercher le profil utilisateur dans la société
-        ProfilUtilisateur profilUtilisateur = profilUtilisateurService.getProfilUtilisateurByIdAndSocieteId(request.getProfilUtilisateurId(), societeId);
+        Role role = roleService.getRoleByIdAndSocieteId(request.getRoleId(), societeId);
 
         //Vérifier que l'utilisateur existe
         Utilisateur utilisateur = utilisateurRepository.findByIdAndSocieteId(utilisateurId, societeId).orElse(null);
@@ -104,7 +104,7 @@ public class UtilisateurService {
         }
 
         utilisateurMapper.update(request, utilisateur);
-        utilisateur.setProfilUtilisateur(profilUtilisateur);
+        utilisateur.setRole(role);
 
         return utilisateurMapper.toDto(utilisateurRepository.save(utilisateur));
     }
