@@ -20,5 +20,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     @Query("SELECT u FROM Utilisateur u WHERE u.role.societe.id = :societeId")
     Page<Utilisateur> findBySocieteId(@Param("societeId") UUID id, Pageable pageable);
 
+    Optional<Utilisateur> findById(UUID id);
+    
     void deleteById(UUID id);
 }

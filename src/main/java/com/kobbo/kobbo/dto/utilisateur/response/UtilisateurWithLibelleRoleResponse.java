@@ -1,6 +1,5 @@
 package com.kobbo.kobbo.dto.utilisateur.response;
 
-import com.kobbo.kobbo.dto.role.response.RoleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @Builder
-public class UtilisateurResponse {
+public class UtilisateurWithLibelleRoleResponse {
     private UUID id;
     private String nom;
     private String email;
-    private RoleResponse roleResponse;
+    private String libelleRole;
 }
