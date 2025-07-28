@@ -1,6 +1,8 @@
 package com.kobbo.kobbo.dto.operation.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kobbo.kobbo.enumeration.Statut;
+import com.kobbo.kobbo.enumeration.TypeOperation;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,11 +28,11 @@ public class RegisterOperationRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOperation;
 
-    @NotBlank(message = "Le statut est vide")
-    private String statut;
+    @NotNull(message = "Le statut est vide")
+    private Statut statut;
 
-    @NotBlank(message = "Le type est vide")
-    private String typeOperation;
+    @NotNull(message = "Le type est vide")
+    private TypeOperation typeOperation;
 
     @NotBlank(message = "Le libellé est vide")
     private String libelle;

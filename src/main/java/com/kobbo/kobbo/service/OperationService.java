@@ -25,13 +25,13 @@ public class OperationService {
 
     public OperationDto createOperation(RegisterOperationRequest request) {
         //Vérifier le statut
-        if (!Statut.listStatut().contains(request.getStatut().toUpperCase())
-                || request.getStatut().equalsIgnoreCase(Statut.SUPPRIMER.toString())) {
+        if (!Statut.listStatut().contains(request.getStatut().name().toUpperCase())
+                || request.getStatut().name().equalsIgnoreCase(Statut.SUPPRIMER.name())) {
             throw new EntityNotFoundException("Statut ", request.getStatut());
         }
 
         //Vérifier le typeOperation
-        if (!TypeOperation.listTypeOperation().contains(request.getTypeOperation().toUpperCase())) {
+        if (!TypeOperation.listTypeOperation().contains(request.getTypeOperation().name().toUpperCase())) {
             throw new EntityNotFoundException("Type opération ", request.getTypeOperation());
         }
 
