@@ -8,7 +8,6 @@ public enum TypeOperation {
     RECETTE;
 
     public static List<String> listTypeOperation() {
-        return Arrays.stream(TypeOperation.values())
-                .map(typeOperation -> typeOperation.name().toUpperCase()).toList();
+        return Arrays.stream(TypeOperation.values()).map(Enum::name).toList();
     }
 }
