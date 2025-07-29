@@ -30,3 +30,29 @@ ALTER TABLE operations ADD COLUMN reference_mode_de_payement VARCHAR(255) DEFAUL
 ALTER TABLE operations ADD COLUMN numero_formater VARCHAR(255) DEFAULT '';
 ALTER TABLE operations DROP FOREIGN KEY fk_operation_societe;
 ALTER TABLE operations DROP COLUMN societes_id;
+
+
+ALTER TABLE utilisateurs DROP FOREIGN KEY fk_utilisateur_roles;
+ALTER TABLE utilisateurs DROP COLUMN roles_id;
+ALTER TABLE utilisateurs ADD CONSTRAINT unique_email UNIQUE (email);
+
+
+ALTER TABLE operations change libelle description longtext NOT NULL;
+ALTER TABLE operations DROP FOREIGN KEY fk_operation_utilisateurs;
+ALTER TABLE operations DROP COLUMN utilisateurs_id;
+
+
+CREATE TABLE permissions(
+id binary(16) key not null default(uuid_to_bin(uuid())),
+utilisateurs_id binary(16) not null,
+roles_id bigint not null,
+actif boolean default(true),
+date_creation timestamp default(current_timestamp()),
+date_modify timestamp default(current_timestamp()) ON UPDATE CURRENT_TIMESTAMP(),
+constraint fk_utilisateurs_permissions foreign key (utilisateurs_id) references utilisateurs(id),
+constraint fk_roles_permissions foreign key (roles_id) references roles(id),
+constraint unique_utilisateurs_roles unique (utilisateurs_id, roles_id));
+
+
+ALTER TABLE operations ADD COLUMN  permissions_id binary(16) NOT NULL;
+ALTER TABLE operations ADD constraint fk_permissions_operations foreign key (permissions_id) references permissions(id) on delete cascade;

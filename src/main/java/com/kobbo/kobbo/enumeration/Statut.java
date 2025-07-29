@@ -10,7 +10,6 @@ public enum Statut {
     SUPPRIMER;
 
     public static List<String> listStatut() {
-        return Arrays.stream(Statut.values())
-                .map(statut -> statut.name().toUpperCase()).toList();
+        return Arrays.stream(Statut.values()).map(Enum::name).toList();
     }
 }

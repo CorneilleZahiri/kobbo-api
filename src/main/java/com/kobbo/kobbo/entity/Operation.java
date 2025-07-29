@@ -31,6 +31,7 @@ public class Operation {
     @Column(name = "statut")
     private Statut statut;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type_operation")
     private TypeOperation typeOperation;
 
