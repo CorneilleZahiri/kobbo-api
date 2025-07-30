@@ -2,9 +2,7 @@ package com.kobbo.kobbo.controller;
 
 import com.kobbo.kobbo.dto.societe.response.SocieteUtilisateurDto;
 import com.kobbo.kobbo.dto.utilisateur.request.RegisterUtilisateurRequest;
-import com.kobbo.kobbo.dto.utilisateur.request.UpdateUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurDto;
-import com.kobbo.kobbo.entity.Role;
 import com.kobbo.kobbo.service.RoleService;
 import com.kobbo.kobbo.service.UtilisateurService;
 import jakarta.validation.Valid;
@@ -21,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/societes")
+@RequestMapping("/utilisateurs")
 @AllArgsConstructor
 public class UtilisateurController {
     private final UtilisateurService utilisateurService;
@@ -33,12 +31,10 @@ public class UtilisateurController {
                                                             @Valid @RequestBody RegisterUtilisateurRequest request,
                                                             UriComponentsBuilder uriComponentsBuilder) {
 
-        Role role = roleService.getRoleByIdAndSocieteId(profilId, societeId);
-        UtilisateurDto utilisateurDto = utilisateurService.createUtilisateur(request, societeId, role);
+        UtilisateurDto utilisateurDto = utilisateurService.createUtilisateur(request);
 
-        URI location = uriComponentsBuilder.path("/societes/{societeId}/profils/{profilId}/utilisateurs/{id}")
-                .buildAndExpand(role.getSociete().getId(), role.getId(),
-                        utilisateurDto.getId())
+        URI location = uriComponentsBuilder.path("/utilisateurs/{id}")
+                .buildAndExpand(utilisateurDto.getId())
                 .toUri();
 
         return ResponseEntity.created(location).body(utilisateurDto);
@@ -64,25 +60,25 @@ public class UtilisateurController {
 
         return ResponseEntity.ok(utilisateurService.getAllUtilisateurBySocieteId(id, pageable));
     }
-
-    @GetMapping("/{societeId}/utilisateurs/{utilisateurId}")
-    public ResponseEntity<UtilisateurDto> getUtilisateurByIdAndSocieteId(@PathVariable(name = "utilisateurId") UUID utilisateurId,
-                                                                         @PathVariable(name = "societeId") UUID societeId) {
-        return ResponseEntity.ok(utilisateurService.getUtilisateurByIdAndSocieteId(utilisateurId, societeId));
-    }
-
-    @PutMapping("/{societeId}/utilisateurs/{utilisateurId}")
-    public ResponseEntity<UtilisateurDto> modifyUtilisateurByIdAndSocieteId(@PathVariable(name = "utilisateurId") UUID utilisateurId,
-                                                                            @PathVariable(name = "societeId") UUID societeId,
-                                                                            @Valid @RequestBody UpdateUtilisateurRequest request) {
-        return ResponseEntity.ok(utilisateurService.modifyUtilisateurByIdAndSocieteId(utilisateurId, societeId, request));
-    }
-
-    @DeleteMapping("/{societeId}/utilisateurs/{utilisateurId}")
-    public ResponseEntity<Void> deleteUtilisateur(@PathVariable(name = "utilisateurId") UUID utilisateurId,
-                                                  @PathVariable(name = "societeId") UUID societeId) {
-        utilisateurService.deleteUtilisateur(utilisateurId, societeId);
-
-        return ResponseEntity.noContent().build();
-    }
+//
+//    @GetMapping("/{societeId}/utilisateurs/{utilisateurId}")
+//    public ResponseEntity<UtilisateurDto> getUtilisateurByIdAndSocieteId(@PathVariable(name = "utilisateurId") UUID utilisateurId,
+//                                                                         @PathVariable(name = "societeId") UUID societeId) {
+//        return ResponseEntity.ok(utilisateurService.getUtilisateurByIdAndSocieteId(utilisateurId, societeId));
+//    }
+//
+//    @PutMapping("/{societeId}/utilisateurs/{utilisateurId}")
+//    public ResponseEntity<UtilisateurDto> modifyUtilisateurByIdAndSocieteId(@PathVariable(name = "utilisateurId") UUID utilisateurId,
+//                                                                            @PathVariable(name = "societeId") UUID societeId,
+//                                                                            @Valid @RequestBody UpdateUtilisateurRequest request) {
+//        return ResponseEntity.ok(utilisateurService.modifyUtilisateurByIdAndSocieteId(utilisateurId, societeId, request));
+//    }
+//
+//    @DeleteMapping("/{societeId}/utilisateurs/{utilisateurId}")
+//    public ResponseEntity<Void> deleteUtilisateur(@PathVariable(name = "utilisateurId") UUID utilisateurId,
+//                                                  @PathVariable(name = "societeId") UUID societeId) {
+//        utilisateurService.deleteUtilisateur(utilisateurId, societeId);
+//
+//        return ResponseEntity.noContent().build();
+//    }
 }

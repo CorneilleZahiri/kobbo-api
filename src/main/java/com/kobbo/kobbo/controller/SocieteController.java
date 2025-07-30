@@ -30,9 +30,7 @@ public class SocieteController {
     @PostMapping
     public ResponseEntity<SocieteDto> createSociete(@Valid @RequestBody RegisterSocieteRequest request,
                                                     UriComponentsBuilder uriComponentsBuilder) {
-        //Convertir le request en entité
-        SocieteDto societeDto = societeService.createSociete(societeMapper.toEntity(request));
-
+        SocieteDto societeDto = societeService.createSociete(request);
 
         //Générer le lien (location)
         URI location = uriComponentsBuilder
