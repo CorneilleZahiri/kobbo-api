@@ -28,8 +28,4 @@ public class Utilisateur {
 
     @Column(name = "mot_de_passe")
     private String motDePasse;
-
-    @ManyToOne
-    @JoinColumn(name = "roles_id")
-    private Role role;
 }

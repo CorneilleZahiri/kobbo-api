@@ -22,17 +22,15 @@ public class SocieteService {
     private final SocieteMapper societeMapper;
 
     @Transactional
-    public SocieteDto createSociete(Societe societe) {
-        //Contrôler le doublon sur l'email
-        Societe societeExiste = getSocieteByEmail(societe.getEmail());
+    public SocieteDto createSociete(RegisterSocieteRequest request) {
+        Societe societe = societeMapper.toEntity(request);
 
-        if (societeExiste != null) {
-            throw new DuplicateEntryException("Société", societeExiste.getEmail());
+        //Contrôler le doublon sur l'email
+        if (getSocieteByEmail(societe.getEmail()) != null) {
+            throw new DuplicateEntryException("Société", societe.getEmail());
         }
 
-        Societe societeSaved = societeRepository.save(societe);
-
-        return societeMapper.toDto(societeSaved);
+        return societeMapper.toDto(societeRepository.save(societe));
     }
 
     @Transactional

@@ -11,16 +11,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
-    @Query("select u from Utilisateur u  WHERE u.id = :utilisateurId AND u.role.societe.id = :societeId")
-    Optional<Utilisateur> findByIdAndSocieteId(@Param("utilisateurId") UUID utilisateurId, @Param("societeId") UUID societeId);
+    Optional<Utilisateur> findByEmail(String email);
 
-    @Query("SELECT u FROM Utilisateur u WHERE u.email = :email AND u.role.societe.id = :societeId")
-    Optional<Utilisateur> findByEmailAndSocieteId(@Param("email") String email, @Param("societeId") UUID societeId);
-
-    @Query("SELECT u FROM Utilisateur u WHERE u.role.societe.id = :societeId")
+    @Query("SELECT u FROM Utilisateur u WHERE u.permission.role.societe.id = :societeId")
     Page<Utilisateur> findBySocieteId(@Param("societeId") UUID id, Pageable pageable);
 
     Optional<Utilisateur> findById(UUID id);
-    
+
     void deleteById(UUID id);
 }

@@ -11,17 +11,13 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UtilisateurMapper {
-    @Mapping(source = "role.id", target = "roleResponse.id")
     UtilisateurDto toDto(Utilisateur utilisateur);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "role", ignore = true)
     Utilisateur toEntity(RegisterUtilisateurRequest request);
 
-    @Mapping(source = "role.id", target = "roleResponse.id")
     UtilisateurResponse toUtilisateurResponse(Utilisateur utilisateur);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "roleId", target = "role.id")
     void update(UpdateUtilisateurRequest request, @MappingTarget Utilisateur utilisateur);
 }
