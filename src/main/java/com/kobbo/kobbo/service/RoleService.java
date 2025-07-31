@@ -65,7 +65,7 @@ public class RoleService {
     }
 
     @Transactional
-    public Role getRoleByIdAndSocieteId(Long roleId, UUID societeId) {
+    public Role getRoleByIdAndSocieteId(UUID roleId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
@@ -79,11 +79,11 @@ public class RoleService {
     }
 
     @Transactional
-    public RoleDto modifyRoleByIdAndSocieteId(Long roleId, UUID societeId, RegisterRoleRequest request) {
+    public RoleDto modifyRoleByIdAndSocieteId(UUID roleId, UUID societeId, RegisterRoleRequest request) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
-        //Vérifier que la nature existe
+        //Vérifier que le rôle existe
         Role role = roleRepository.findByIdAndSocieteId(roleId, societeId).orElse(null);
         if (role == null) {
             throw new EntityNotFoundException("Ce rôle ",
@@ -93,7 +93,7 @@ public class RoleService {
         //Contrôler le doublon sur l'intitulé dans cette société
         Role roleDuplicated = getRoleByLibelleAndSocieteId(request.getLibelle(), societe.getId());
 
-        if (roleDuplicated != null && !roleDuplicated.getId().equals(roleId)) {
+        if (roleDuplicated != null && !roleDuplicated.getId().equals(role.getId())) {
             throw new DuplicateEntryException("Le rôle " + request.getLibelle(),
                     societeId.toString() + " (" + societe.getRaisonSociale() + ")");
         }
@@ -104,11 +104,11 @@ public class RoleService {
     }
 
     @Transactional
-    public void deleteRole(Long roleId, UUID societeId) {
+    public void deleteRole(UUID roleId, UUID societeId) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
-        //Vérifier que la nature existe
+        //Vérifier que le rôle existe
         Role role = roleRepository.findByIdAndSocieteId(roleId, societeId).orElse(null);
         if (role == null) {
             throw new EntityNotFoundException("Ce rôle ",

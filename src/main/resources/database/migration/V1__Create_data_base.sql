@@ -2,8 +2,8 @@
 CREATE TABLE societes (
   id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
   raison_sociale VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  adresse VARCHAR(255)
+  email VARCHAR(255) DEFAULT '',
+  adresse VARCHAR(255) DEFAULT ''
 );
 
 -- Table ROLES

@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface NatureRepository extends JpaRepository<Nature, Long> {
-    Optional<Nature> findByIdAndSocieteId(Long natureId, UUID societeId);
+public interface NatureRepository extends JpaRepository<Nature, UUID> {
+    Optional<Nature> findById(UUID natureId);
 
     Optional<Nature> findByIntituleAndSocieteId(String intitule, UUID id);
 

@@ -62,21 +62,21 @@ public class RoleController {
     }
 
     @GetMapping("/{societeId}/roles/{roleId}")
-    public ResponseEntity<RoleDto> getRoleByIdAndSocieteId(@PathVariable(name = "roleId") Long roleId,
+    public ResponseEntity<RoleDto> getRoleByIdAndSocieteId(@PathVariable(name = "roleId") UUID roleId,
                                                            @PathVariable(name = "societeId") UUID societeId) {
         Role role = roleService.getRoleByIdAndSocieteId(roleId, societeId);
         return ResponseEntity.ok(roleMapper.toDto(role));
     }
 
     @PutMapping("/{societeId}/roles/{roleId}")
-    public ResponseEntity<RoleDto> modifyRoleByIdAndSocieteId(@PathVariable(name = "roleId") Long roleId,
+    public ResponseEntity<RoleDto> modifyRoleByIdAndSocieteId(@PathVariable(name = "roleId") UUID roleId,
                                                               @PathVariable(name = "societeId") UUID societeId,
                                                               @Valid @RequestBody RegisterRoleRequest request) {
         return ResponseEntity.ok(roleService.modifyRoleByIdAndSocieteId(roleId, societeId, request));
     }
 
     @DeleteMapping("/{societeId}/roles/{roleId}")
-    public ResponseEntity<Void> deleteRole(@PathVariable(name = "roleId") Long roleId,
+    public ResponseEntity<Void> deleteRole(@PathVariable(name = "roleId") UUID roleId,
                                            @PathVariable(name = "societeId") UUID societeId) {
         roleService.deleteRole(roleId, societeId);
 

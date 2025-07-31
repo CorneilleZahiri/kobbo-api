@@ -1,9 +1,7 @@
 package com.kobbo.kobbo.dto.operation.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.kobbo.kobbo.dto.nature.response.NatureResponse;
 import com.kobbo.kobbo.dto.tiers.response.TiersResponse;
-import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurWithLibelleRoleResponse;
 import com.kobbo.kobbo.enumeration.Statut;
 import com.kobbo.kobbo.enumeration.TypeOperation;
 import lombok.AllArgsConstructor;

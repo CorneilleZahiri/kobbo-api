@@ -3,10 +3,10 @@ package com.kobbo.kobbo.service;
 import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
 import com.kobbo.kobbo.dto.societe.response.SocieteDto;
 import com.kobbo.kobbo.entity.Societe;
-import com.kobbo.kobbo.exception.DuplicateEntryException;
 import com.kobbo.kobbo.exception.EntityNotFoundException;
 import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.repository.SocieteRepository;
+import jakarta.mail.internet.InternetAddress;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +25,11 @@ public class SocieteService {
     public SocieteDto createSociete(RegisterSocieteRequest request) {
         Societe societe = societeMapper.toEntity(request);
 
-        //Contrôler le doublon sur l'email
-        if (getSocieteByEmail(societe.getEmail()) != null) {
-            throw new DuplicateEntryException("Société", societe.getEmail());
+        //Contrôler le format de l'email
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            if (isValidEmail(request.getEmail())) {
+                throw new IllegalArgumentException("Le format de l'adresse email de la société est invalide.");
+            }
         }
 
         return societeMapper.toDto(societeRepository.save(societe));
@@ -50,12 +52,6 @@ public class SocieteService {
     }
 
     @Transactional
-    public Societe getSocieteByEmail(String email) {
-        //Contrôler le doublon sur l'email
-        return societeRepository.findByEmail(email).orElse(null);
-    }
-
-    @Transactional
     public Societe updateSociete(UUID id, RegisterSocieteRequest request) {
         // Controller l'existence de la société
         Societe societe = getSocieteById(id);
@@ -63,11 +59,11 @@ public class SocieteService {
             throw new EntityNotFoundException("Société", id.toString());
         }
 
-        //Contrôler le doublon sur l'email
-        Societe societeDuplicated = getSocieteByEmail(request.getEmail());
-
-        if (societeDuplicated != null && !societeDuplicated.getId().equals(id)) {
-            throw new DuplicateEntryException("Société", societeDuplicated.getEmail());
+        //Contrôler le format de l'email
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            if (isValidEmail(request.getEmail())) {
+                throw new IllegalArgumentException("Le format de l'adresse email de la société est invalide.");
+            }
         }
 
         societeMapper.update(request, societe);
@@ -85,4 +81,16 @@ public class SocieteService {
 
         societeRepository.delete(societe);
     }
+
+
+    public boolean isValidEmail(String email) {
+        try {
+            InternetAddress internetAddress = new InternetAddress(email);
+            internetAddress.validate();
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
 }
