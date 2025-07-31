@@ -1,67 +1,81 @@
-#-- La société qui va contenir les utilisateurs et leurs opérations --
-CREATE TABLE societes(
-id binary(16) primary key not null default(uuid_to_bin(uuid())),
-raison_sociale VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE,
-adresse VARCHAR(255)
+-- Table SOCIETES
+CREATE TABLE societes (
+  id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
+  raison_sociale VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  adresse VARCHAR(255)
 );
 
-#-- Le profil utilisateur aussi appellé ROLE --
-CREATE TABLE profil_utilisateurs(
-id BIGINT primary key AUTO_INCREMENT NOT NULL,
-libelle VARCHAR(50) NOT NULL
+-- Table ROLES
+CREATE TABLE roles (
+  id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
+  libelle VARCHAR(50) NOT NULL,
+  societes_id BINARY(16) NOT NULL,
+  UNIQUE (libelle, societes_id),
+  FOREIGN KEY (societes_id) REFERENCES societes(id) ON DELETE CASCADE
 );
 
-#-- Cette table contient tous les utilisateurs qui peuvent accéder à la plateforme
-CREATE TABLE utilisateurs(
-id binary(16) primary key not null default(uuid_to_bin(uuid())),
-nom VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE, --La contrainte d'unicité d'email a été supprimée dans la version 2
-mot_de_passe  VARCHAR(255) NOT NULL,
-profil_utilisateurs_id BIGINT NOT NULL,
-societes_id binary(16),
-CONSTRAINT fk_utilisateur_profils FOREIGN KEY (profil_utilisateurs_id) REFERENCES profil_utilisateurs (id) ON DELETE CASCADE,
-CONSTRAINT fk_utilisateur_societes FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
+-- Table UTILISATEURS
+CREATE TABLE utilisateurs (
+  id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
+  nom VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  mot_de_passe VARCHAR(255) NOT NULL
 );
 
-#-- Cette table enregistre les natures des opérations comme le SALAIRE, le LOYER etc. --
-CREATE TABLE natures(
-id BIGINT primary key AUTO_INCREMENT NOT NULL,
-intitule VARCHAR(255) NOT NULL,
-societes_id binary(16) NOT NULL,
-CONSTRAINT fk_nature_societe FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
+-- Table COMPTES_SOCIETE
+CREATE TABLE comptes_societe (
+  id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
+  utilisateurs_id BINARY(16) NOT NULL,
+  roles_id BINARY(16) NOT NULL,
+  actif BOOLEAN DEFAULT TRUE,
+  date_creation TIMESTAMP DEFAULT(current_timestamp()),
+  date_modify TIMESTAMP DEFAULT(current_timestamp()) ON UPDATE current_timestamp(),
+  UNIQUE (utilisateurs_id, roles_id),
+  FOREIGN KEY (utilisateurs_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
+  FOREIGN KEY (roles_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 
-#-- Cette table permet d'associer à chaque opération
-#-- le responsable qui a effectué l'opération dans la vie réelle par exemple le plombier du nom de Corneille
-CREATE TABLE responsables(
-id binary(16) primary key not null default(uuid_to_bin(uuid())),
-nom VARCHAR(255) NOT NULL,
-fonction  VARCHAR(255),
-societes_id binary(16) NOT NULL,
-CONSTRAINT fk_responsable_societe FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
+-- Table TIERS
+CREATE TABLE tiers (
+  id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
+  nom VARCHAR(255) NOT NULL,
+  nature VARCHAR(255),
+  contact VARCHAR(50),
+  comptes_societe_id BINARY(16) NOT NULL,
+  FOREIGN KEY (comptes_societe_id) REFERENCES comptes_societe(id) ON DELETE CASCADE
 );
 
-#--La table de toutes les opérations
-CREATE TABLE operations(
-id binary(16) primary key not null default(uuid_to_bin(uuid())),
-date_operation date NOT NULL,
-intitule LONGTEXT NOT NULL,
-montant  DECIMAL(10, 2) NOT NULL,
-type_operation VARCHAR(50) NOT NULL,
-url_fichier VARCHAR(255),
-utilisateurs_id binary(16) NOT NULL,
-responsables_id binary(16) NOT NULL,
-natures_id BIGINT NOT NULL,
-date_creation timestamp default(current_timestamp()),
-societes_id binary(16) NOT NULL,
-
-CONSTRAINT fk_operation_utilisateurs FOREIGN KEY (utilisateurs_id) REFERENCES utilisateurs (id) ON DELETE CASCADE,
-CONSTRAINT fk_operation_responsables FOREIGN KEY (responsables_id) REFERENCES responsables (id) ON DELETE CASCADE,
-CONSTRAINT fk_operation_natures FOREIGN KEY (natures_id) REFERENCES natures (id) ON DELETE CASCADE,
-CONSTRAINT fk_operation_societe FOREIGN KEY (societes_id) REFERENCES societes (id) ON DELETE CASCADE
+-- Table NATURES
+CREATE TABLE natures (
+  id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
+  intitule VARCHAR(255) NOT NULL,
+  comptes_societe_id BINARY(16) NOT NULL,
+  UNIQUE (intitule, comptes_societe_id),
+  FOREIGN KEY (comptes_societe_id) REFERENCES comptes_societe(id) ON DELETE CASCADE
 );
 
-#-- Pour les filtres indépendants ou combinés
-CREATE INDEX idx_operations_date ON operations (date_operation);
-CREATE INDEX idx_operations_type ON operations (type_operation);
+-- Table OPERATIONS
+CREATE TABLE operations (
+  id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
+  date_operation DATE NOT NULL,
+  type_operation VARCHAR(50) NOT NULL,
+  description LONGTEXT NOT NULL,
+  montant DECIMAL(10,2) NOT NULL,
+  comptes_societe_id BINARY(16) NOT NULL,
+  tiers_id BINARY(16) NOT NULL,
+  natures_id BINARY(16) NOT NULL,
+  statut VARCHAR(50) NOT NULL DEFAULT 'VALIDE',
+  mode_de_payement VARCHAR(255) NOT NULL,
+  reference_mode_de_payement VARCHAR(255) DEFAULT '',
+  numero_formater VARCHAR(255) DEFAULT '',
+  url_fichier VARCHAR(255),
+  date_creation TIMESTAMP DEFAULT(current_timestamp()),
+  date_modify TIMESTAMP DEFAULT(current_timestamp()) ON UPDATE current_timestamp(),
+  FOREIGN KEY (comptes_societe_id) REFERENCES comptes_societe(id) ON DELETE CASCADE,
+  FOREIGN KEY (tiers_id) REFERENCES tiers(id) ON DELETE CASCADE,
+  FOREIGN KEY (natures_id) REFERENCES natures(id) ON DELETE CASCADE,
+  INDEX (date_operation),
+  INDEX (type_operation),
+  INDEX (statut)
+);

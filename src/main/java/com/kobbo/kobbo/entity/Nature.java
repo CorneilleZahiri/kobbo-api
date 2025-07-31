@@ -14,14 +14,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Nature {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "intitule")
     private String intitule;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "societes_id")
-    private Societe societe;
+    @ManyToOne
+    @JoinColumn(name = "comptes_societe_id")
+    private ComptesSociete comptesSociete;
 }

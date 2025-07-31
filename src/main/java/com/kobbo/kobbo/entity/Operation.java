@@ -28,18 +28,18 @@ public class Operation {
     private LocalDate dateOperation;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "statut")
-    private Statut statut;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "type_operation")
     private TypeOperation typeOperation;
 
-    @Column(name = "libelle")
-    private String libelle;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "montant")
     private BigDecimal montant;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "statut")
+    private Statut statut;
 
     @Column(name = "mode_de_payement")
     private String modeDePayement;
@@ -59,6 +59,6 @@ public class Operation {
     private Nature nature;
 
     @ManyToOne
-    @JoinColumn(name = "utilisateurs_id")
-    private Utilisateur utilisateur;
+    @JoinColumn(name = "comptes_societe_id")
+    private ComptesSociete comptesSociete;
 }

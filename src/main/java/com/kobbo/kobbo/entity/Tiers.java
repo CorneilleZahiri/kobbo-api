@@ -29,7 +29,7 @@ public class Tiers {
     @Column(name = "contact")
     private String contact;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "societes_id")
-    private Societe societe;
+    @ManyToOne
+    @JoinColumn(name = "comptes_societe_id")
+    private ComptesSociete comptesSociete;
 }
