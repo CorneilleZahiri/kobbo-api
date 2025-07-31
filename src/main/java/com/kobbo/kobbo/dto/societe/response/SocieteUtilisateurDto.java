@@ -1,6 +1,5 @@
 package com.kobbo.kobbo.dto.societe.response;
 
-import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

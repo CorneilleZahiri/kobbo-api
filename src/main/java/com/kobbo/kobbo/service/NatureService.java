@@ -2,7 +2,6 @@ package com.kobbo.kobbo.service;
 
 import com.kobbo.kobbo.dto.nature.request.RegisterNatureRequest;
 import com.kobbo.kobbo.dto.nature.response.NatureDto;
-import com.kobbo.kobbo.dto.nature.response.NatureResponse;
 import com.kobbo.kobbo.dto.societe.response.SocieteDto;
 import com.kobbo.kobbo.dto.societe.response.SocieteNatureDto;
 import com.kobbo.kobbo.entity.Nature;

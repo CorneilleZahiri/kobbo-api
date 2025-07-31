@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Optional<Role> findByIdAndSocieteId(Long roleId, UUID societeId);
+    Optional<Role> findByIdAndSocieteId(UUID roleId, UUID societeId);
 
     Optional<Role> findByLibelleAndSocieteId(String intitule, UUID societeId);
 

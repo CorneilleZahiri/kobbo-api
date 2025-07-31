@@ -3,7 +3,6 @@ package com.kobbo.kobbo.mapper;
 import com.kobbo.kobbo.dto.utilisateur.request.RegisterUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.request.UpdateUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurDto;
-import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurResponse;
 import com.kobbo.kobbo.entity.Utilisateur;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,8 +14,6 @@ public interface UtilisateurMapper {
 
     @Mapping(target = "id", ignore = true)
     Utilisateur toEntity(RegisterUtilisateurRequest request);
-
-    UtilisateurResponse toUtilisateurResponse(Utilisateur utilisateur);
 
     @Mapping(target = "id", ignore = true)
     void update(UpdateUtilisateurRequest request, @MappingTarget Utilisateur utilisateur);

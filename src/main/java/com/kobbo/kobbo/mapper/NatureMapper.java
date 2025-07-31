@@ -2,7 +2,6 @@ package com.kobbo.kobbo.mapper;
 
 import com.kobbo.kobbo.dto.nature.request.RegisterNatureRequest;
 import com.kobbo.kobbo.dto.nature.response.NatureDto;
-import com.kobbo.kobbo.dto.nature.response.NatureResponse;
 import com.kobbo.kobbo.entity.Nature;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
