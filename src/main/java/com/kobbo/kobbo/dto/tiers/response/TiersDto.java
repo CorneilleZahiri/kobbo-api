@@ -1,6 +1,5 @@
 package com.kobbo.kobbo.dto.tiers.response;
 
-import com.kobbo.kobbo.dto.societe.response.SocieteDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +14,4 @@ public class TiersDto {
     private String nom;
     private String nature;
     private String contact;
-    private SocieteDto societeDto;
 }

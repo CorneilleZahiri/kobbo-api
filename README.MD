@@ -51,45 +51,28 @@ L'application repose sur une base de données MySQL structurée comme suit :
 La création de compte sur la plateforme suit un processus bien défini garantissant la cohérence des données en base et
 une expérience utilisateur fluide.
 
-### 🧾 Étapes de création de compte
+### 🧾 Création de compte
 
-Accès au formulaire d'inscription :
-L'utilisateur clique sur le bouton Créer un compte ou Inscription sur la page d'accueil.
+L'utilisateur crée un compte personnel en remplissant un formulaire avec les champs suivants :
 
-Remplissage du formulaire :
-Le formulaire comprend les champs suivants :
+- Nom
+- Email
+- Mot de passe
 
-Société : nom ou raison sociale de la société à créer
+Une fois le compte créé, il est redirigé vers la page de connexion.
 
-Nom de l’utilisateur
+### 🔐 Connexion et gestion des sociétés
 
-Email
+Après connexion (via email + mot de passe), l'utilisateur accède à un tableau de bord listant ses sociétés (le cas
+échéant).
 
-Mot de passe
+S’il n’en a aucune, un bouton **"Créer une société"** lui est proposé.
 
-Rôle : automatiquement fixé à ADMINISTRATEUR (non modifiable)
+Lors de la création d’une société, les éléments suivants sont générés :
 
-Enregistrement en base :
-Une transaction unique est déclenchée pour enregistrer les données dans l’ordre suivant :
-
-Table societes
-
-Table roles
-
-Table utilisateurs
-
-Table comptes_societe (associant l’utilisateur, le rôle et la société)
-
-Redirection vers la page de connexion :
-Une fois l’inscription réussie, l’utilisateur est invité à se connecter via un formulaire de connexion.
-
-### 🔐 Authentification
-
-L’utilisateur saisit son email et mot de passe.
-
-Si les identifiants sont valides, un JWT (JSON Web Token) est généré et retourné dans la réponse.
-
-Une fois authentifié, l'utilisateur est redirigé vers une page affichant la liste de ses sociétés.
+- Enregistrement de la société (`societes`)
+- Création automatique du rôle `ADMINISTRATEUR`
+- Affectation de l’utilisateur courant à cette société avec le rôle `ADMINISTRATEUR` (`comptes_societe`)
 
 ### 🏢 Sélection de la société et navigation
 
@@ -98,26 +81,69 @@ L'utilisateur sélectionne une société pour définir le contexte d’exécutio
 Une fois la société choisie, le menu principal est affiché, donnant accès aux différentes fonctionnalités (gestion des
 utilisateurs, rôles, transactions, etc.).
 
-### ➕ Création de nouvelles sociétés (post-inscription)
+#### Explication en image
 
-Un utilisateur authentifié peut créer de nouvelles sociétés (si son rôle le permet).
+![Création de compte - Kobbo](CreationCompte.png)
 
-Pour chaque nouvelle société créée, un nouveau lien est établi dans la table comptes_societe.
+### 💡 Détails importants
+
+### 🔐 Authentification
+
+Tous les endpoints (sauf [POST] /api/v1/kobbo/utilisateurs et [POST] /api/v1/kobbo/auth/login) nécessitent un JWT valide
+dans l’en-tête Authorization.
+
+    Authorization: Bearer <token>
+
+### 🆕 Ajout de logique lors de la création de société
+
+Quand un utilisateur authentifié appelle :
+
+    POST /api/societes
+
+Le backend effectue les actions suivantes (transaction atomique) :
+
+1- Crée la société
+
+2- Crée automatiquement un rôle par défaut ADMINISTRATEUR (si non existant)
+
+3- Crée une entrée dans comptes_societe liant l’utilisateur, la société et le rôle ADMINISTRATEUR
+
+#### 📌 Exemple JSON - Création société
+
+Requête :
+
+    POST /api/societes
+    Authorization: Bearer <jwt>
+
+    {
+        "nom": "Kobbo SARL",
+        "description": "Société de test"
+    }
+
+Réponse :
+
+    {
+        "id": "uuid-societe",
+        "nom": "Kobbo SARL",
+        "admin": {
+            "idUtilisateur": "uuid-user",
+            "role": "ADMINISTRATEUR"
+        }
+    }
 
 # 📋 Endpoints REST - Kobbo API
 
-| Méthode | Endpoint                             | Description                               |
-|---------|--------------------------------------|-------------------------------------------|
-| POST    | `/api/auth/register`                 | Créer un compte utilisateur avec société  |
-| POST    | `/api/auth/login`                    | Connexion utilisateur, renvoie un JWT     |
-| GET     | `/api/societes`                      | Lister les sociétés d’un utilisateur      |
-| POST    | `/api/societes`                      | Créer une société                         |
-| GET     | `/api/societes/{id}/utilisateurs`    | Liste des utilisateurs d’une société      |
-| POST    | `/api/societes/{id}/utilisateurs`    | Ajouter un utilisateur à une société      |
-| GET     | `/api/societes/{id}/roles`           | Lister les rôles disponibles              |
-| POST    | `/api/societes/{id}/roles`           | Ajouter un rôle à la société              |
-| GET     | `/api/affectations?societeId={uuid}` | Liste des affectations d’une société      |
-| POST    | `/api/affectations`                  | Créer une affectation utilisateur-société |
+| Méthode | Endpoint                                   | Description                                  |
+|---------|--------------------------------------------|----------------------------------------------|
+| POST    | `/api/v1/kobbo/utilisateurs`               | Créer un compte utilisateur                  |
+| POST    | `/api/v1/kobbo/auth/login`                 | Connexion utilisateur, renvoie un JWT        |
+| GET     | `/api/v1/kobbo/societes`                   | Lister les sociétés d’un utilisateur         |
+| POST    | `/api/v1/kobbo/societes`                   | Créer une société                            |
+| GET     | `/api/v1/kobbo/societes/{id}/utilisateurs` | Liste des utilisateurs d’une société         |
+| POST    | `/api/v1/kobbo/societes/{id}/utilisateurs` | Ajouter un utilisateur à une société         |
+| GET     | `/api/v1/kobbo/societes/{id}/roles`        | Lister les rôles disponibles                 |
+| POST    | `/api/v1/kobbo/societes/{id}/roles`        | Ajouter un rôle à la société                 |
+| POST    | `/api/v1/kobbo/comptes`                    | Créer un compte utilisateur dans une société |
 
 ## 🚀 Installation
 

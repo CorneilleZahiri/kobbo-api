@@ -58,7 +58,7 @@ public class RoleController {
         Sort.Direction dir = Sort.Direction.fromString(direction);
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sortBy));
 
-        return ResponseEntity.ok(roleService.getAllRoleBySocieteId(societeId, pageable));
+        return ResponseEntity.ok(roleService.getListRoleBySocieteId(societeId, pageable));
     }
 
     @GetMapping("/{societeId}/roles/{roleId}")
@@ -72,7 +72,7 @@ public class RoleController {
     public ResponseEntity<RoleDto> modifyRoleByIdAndSocieteId(@PathVariable(name = "roleId") UUID roleId,
                                                               @PathVariable(name = "societeId") UUID societeId,
                                                               @Valid @RequestBody RegisterRoleRequest request) {
-        return ResponseEntity.ok(roleService.modifyRoleByIdAndSocieteId(roleId, societeId, request));
+        return ResponseEntity.ok(roleService.updateRoleByIdAndSocieteId(roleId, societeId, request));
     }
 
     @DeleteMapping("/{societeId}/roles/{roleId}")

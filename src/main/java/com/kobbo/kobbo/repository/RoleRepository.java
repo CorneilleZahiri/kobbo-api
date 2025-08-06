@@ -11,7 +11,9 @@ import java.util.UUID;
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByIdAndSocieteId(UUID roleId, UUID societeId);
 
-    Optional<Role> findByLibelleAndSocieteId(String intitule, UUID societeId);
+    Optional<Role> findByLibelleAndSocieteId(String libelle, UUID societeId);
 
     Page<Role> findBySocieteId(UUID societeId, Pageable pageable);
+
+    void deleteById(UUID id);
 }
