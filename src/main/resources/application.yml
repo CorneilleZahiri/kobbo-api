@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /pps/api/kobbo
+    context-path: /api/v1/kobbo
 spring:
   application:
     name: kobbo
@@ -10,3 +10,7 @@ spring:
     password: ${PASSWORD_DB}
   jpa:
     show-sql: true
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 900 # 15min
+    refreshTokenExpiration: 604800 # 7 jours

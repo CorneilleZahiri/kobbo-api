@@ -16,5 +16,6 @@ public interface UtilisateurMapper {
     Utilisateur toEntity(RegisterUtilisateurRequest request);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "motDePasse", ignore = true)
     void update(UpdateUtilisateurRequest request, @MappingTarget Utilisateur utilisateur);
 }

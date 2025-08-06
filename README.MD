@@ -89,7 +89,8 @@ utilisateurs, rôles, transactions, etc.).
 
 ### 🔐 Authentification
 
-Tous les endpoints (sauf /register et /login) nécessitent un JWT valide dans l’en-tête Authorization.
+Tous les endpoints (sauf [POST] /api/v1/kobbo/utilisateurs et [POST] /api/v1/kobbo/auth/login) nécessitent un JWT valide
+dans l’en-tête Authorization.
 
     Authorization: Bearer <token>
 
@@ -132,18 +133,17 @@ Réponse :
 
 # 📋 Endpoints REST - Kobbo API
 
-| Méthode | Endpoint                             | Description                               |
-|---------|--------------------------------------|-------------------------------------------|
-| POST    | `/api/auth/register`                 | Créer un compte utilisateur avec société  |
-| POST    | `/api/auth/login`                    | Connexion utilisateur, renvoie un JWT     |
-| GET     | `/api/societes`                      | Lister les sociétés d’un utilisateur      |
-| POST    | `/api/societes`                      | Créer une société                         |
-| GET     | `/api/societes/{id}/utilisateurs`    | Liste des utilisateurs d’une société      |
-| POST    | `/api/societes/{id}/utilisateurs`    | Ajouter un utilisateur à une société      |
-| GET     | `/api/societes/{id}/roles`           | Lister les rôles disponibles              |
-| POST    | `/api/societes/{id}/roles`           | Ajouter un rôle à la société              |
-| GET     | `/api/affectations?societeId={uuid}` | Liste des affectations d’une société      |
-| POST    | `/api/affectations`                  | Créer une affectation utilisateur-société |
+| Méthode | Endpoint                                   | Description                                  |
+|---------|--------------------------------------------|----------------------------------------------|
+| POST    | `/api/v1/kobbo/utilisateurs`               | Créer un compte utilisateur                  |
+| POST    | `/api/v1/kobbo/auth/login`                 | Connexion utilisateur, renvoie un JWT        |
+| GET     | `/api/v1/kobbo/societes`                   | Lister les sociétés d’un utilisateur         |
+| POST    | `/api/v1/kobbo/societes`                   | Créer une société                            |
+| GET     | `/api/v1/kobbo/societes/{id}/utilisateurs` | Liste des utilisateurs d’une société         |
+| POST    | `/api/v1/kobbo/societes/{id}/utilisateurs` | Ajouter un utilisateur à une société         |
+| GET     | `/api/v1/kobbo/societes/{id}/roles`        | Lister les rôles disponibles                 |
+| POST    | `/api/v1/kobbo/societes/{id}/roles`        | Ajouter un rôle à la société                 |
+| POST    | `/api/v1/kobbo/comptes`                    | Créer un compte utilisateur dans une société |
 
 ## 🚀 Installation
 
