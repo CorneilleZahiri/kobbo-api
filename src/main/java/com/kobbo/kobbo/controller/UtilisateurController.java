@@ -33,7 +33,7 @@ public class UtilisateurController {
 
         return ResponseEntity.created(location).body(utilisateurDto);
     }
-    
+
     @GetMapping("/{utilisateurId}")
     public ResponseEntity<UtilisateurDto> getUtilisateurByIdAndSocieteId(@PathVariable(name = "utilisateurId") UUID utilisateurId) {
         return ResponseEntity.ok(utilisateurService.getUtilisateurById(utilisateurId));
@@ -42,7 +42,7 @@ public class UtilisateurController {
     @PutMapping("/{utilisateurId}")
     public ResponseEntity<UtilisateurDto> modifyUtilisateurById(@PathVariable(name = "utilisateurId") UUID utilisateurId,
                                                                 @Valid @RequestBody UpdateUtilisateurRequest request) {
-        return ResponseEntity.ok(utilisateurService.modifyUtilisateurById(utilisateurId, request));
+        return ResponseEntity.ok(utilisateurService.updateUtilisateurById(utilisateurId, request));
     }
 
     @DeleteMapping("/{utilisateurId}")

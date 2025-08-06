@@ -33,7 +33,7 @@ public class RoleService {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
-        //Contrôler le doublon sur l'intitulé
+        //Contrôler le doublon sur le libellé
         if (getRoleByLibelleAndSocieteId(request.getLibelle(), societe.getId()) != null) {
             throw new DuplicateEntryException("Le rôle " + request.getLibelle(),
                     societeId.toString() + " (" + societe.getRaisonSociale() + ")");
@@ -51,7 +51,7 @@ public class RoleService {
     }
 
     @Transactional
-    public SocieteRoleDto getAllRoleBySocieteId(UUID societeId, Pageable pageable) {
+    public SocieteRoleDto getListRoleBySocieteId(UUID societeId, Pageable pageable) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
@@ -79,7 +79,7 @@ public class RoleService {
     }
 
     @Transactional
-    public RoleDto modifyRoleByIdAndSocieteId(UUID roleId, UUID societeId, RegisterRoleRequest request) {
+    public RoleDto updateRoleByIdAndSocieteId(UUID roleId, UUID societeId, RegisterRoleRequest request) {
         //Vérifier l'existence de Société
         Societe societe = societeService.getSocieteById(societeId);
 
@@ -90,7 +90,7 @@ public class RoleService {
                     societeId.toString() + " (" + societe.getRaisonSociale() + ")");
         }
 
-        //Contrôler le doublon sur l'intitulé dans cette société
+        //Contrôler le doublon sur le libellé dans cette société
         Role roleDuplicated = getRoleByLibelleAndSocieteId(request.getLibelle(), societe.getId());
 
         if (roleDuplicated != null && !roleDuplicated.getId().equals(role.getId())) {

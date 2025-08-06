@@ -27,7 +27,7 @@ public class SocieteService {
 
         //Contrôler le format de l'email
         if (request.getEmail() != null && !request.getEmail().isBlank()) {
-            if (isValidEmail(request.getEmail())) {
+            if (isNotValidEmail(request.getEmail())) {
                 throw new IllegalArgumentException("Le format de l'adresse email de la société est invalide.");
             }
         }
@@ -61,7 +61,7 @@ public class SocieteService {
 
         //Contrôler le format de l'email
         if (request.getEmail() != null && !request.getEmail().isBlank()) {
-            if (isValidEmail(request.getEmail())) {
+            if (isNotValidEmail(request.getEmail())) {
                 throw new IllegalArgumentException("Le format de l'adresse email de la société est invalide.");
             }
         }
@@ -83,7 +83,7 @@ public class SocieteService {
     }
 
 
-    public boolean isValidEmail(String email) {
+    public boolean isNotValidEmail(String email) {
         try {
             InternetAddress internetAddress = new InternetAddress(email);
             internetAddress.validate();

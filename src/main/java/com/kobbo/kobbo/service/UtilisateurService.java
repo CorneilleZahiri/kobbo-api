@@ -53,7 +53,7 @@ public class UtilisateurService {
     }
 
     @Transactional
-    public UtilisateurDto modifyUtilisateurById(UUID utilisateurId, UpdateUtilisateurRequest request) {
+    public UtilisateurDto updateUtilisateurById(UUID utilisateurId, UpdateUtilisateurRequest request) {
         //Vérifier que l'utilisateur existe
         Utilisateur utilisateur = utilisateurRepository.findById(utilisateurId).orElse(null);
         if (utilisateur == null) {
