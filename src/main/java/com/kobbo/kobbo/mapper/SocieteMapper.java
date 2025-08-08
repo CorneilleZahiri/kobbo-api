@@ -11,6 +11,8 @@ import org.mapstruct.MappingTarget;
 public interface SocieteMapper {
     SocieteDto toDto(Societe societe);
 
+    Societe societeDtoToEntity(SocieteDto societeDto);
+
     @Mapping(target = "id", ignore = true)
     Societe toEntity(RegisterSocieteRequest request);
 

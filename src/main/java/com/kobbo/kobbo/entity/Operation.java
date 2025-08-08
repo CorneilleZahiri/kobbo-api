@@ -60,5 +60,5 @@ public class Operation {
 
     @ManyToOne
     @JoinColumn(name = "comptes_societe_id")
-    private ComptesSociete comptesSociete;
+    private Compte compte;
 }

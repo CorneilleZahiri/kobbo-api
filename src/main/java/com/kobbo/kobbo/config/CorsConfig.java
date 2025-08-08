@@ -16,7 +16,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Autorise l'origine du frontend
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // ou ton domaine en prod
+        config.setAllowedOrigins(List.of("http://172.20.10.4:5173")); // ou ton domaine en prod
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // pour les cookies ou headers d'auth
