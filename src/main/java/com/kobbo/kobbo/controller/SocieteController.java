@@ -19,7 +19,6 @@ import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
 
-
 @RestController
 @RequestMapping("/societes")
 @AllArgsConstructor
@@ -30,15 +29,15 @@ public class SocieteController {
     @PostMapping
     public ResponseEntity<SocieteDto> createSociete(@Valid @RequestBody RegisterSocieteRequest request,
                                                     UriComponentsBuilder uriComponentsBuilder) {
-        SocieteDto societeDto = societeService.createSociete(request);
+        Societe societe = societeService.createSociete(request);
 
         //Générer le lien (location)
         URI location = uriComponentsBuilder
                 .path("/societes/{id}")
-                .buildAndExpand(societeDto.getId())
+                .buildAndExpand(societe.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(societeDto);
+        return ResponseEntity.created(location).body(societeMapper.toDto(societe));
     }
 
     @GetMapping

@@ -3,7 +3,9 @@ package com.kobbo.kobbo.service;
 import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
 import com.kobbo.kobbo.dto.societe.response.SocieteDto;
 import com.kobbo.kobbo.entity.Societe;
+import com.kobbo.kobbo.exception.DuplicateEntryException;
 import com.kobbo.kobbo.exception.EntityNotFoundException;
+import com.kobbo.kobbo.exception.InvalideArgumentException;
 import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.repository.SocieteRepository;
 import jakarta.mail.internet.InternetAddress;
@@ -22,17 +24,28 @@ public class SocieteService {
     private final SocieteMapper societeMapper;
 
     @Transactional
-    public SocieteDto createSociete(RegisterSocieteRequest request) {
+    public Societe createSociete(RegisterSocieteRequest request) {
+        
         Societe societe = societeMapper.toEntity(request);
+
+        //Contrôler le doublon sur le nom et le pays
+        if (findSocieteByNomAndPays(societe.getRaisonSociale(), societe.getPays()) != null) {
+            throw new DuplicateEntryException("La société " + societe.getRaisonSociale(), societe.getPays());
+        }
 
         //Contrôler le format de l'email
         if (request.getEmail() != null && !request.getEmail().isBlank()) {
             if (isNotValidEmail(request.getEmail())) {
-                throw new IllegalArgumentException("Le format de l'adresse email de la société est invalide.");
+                throw new InvalideArgumentException("Le format de l'adresse email de la société est invalide.");
             }
         }
 
-        return societeMapper.toDto(societeRepository.save(societe));
+        return societeRepository.save(societe);
+    }
+
+    @Transactional
+    public Societe findSocieteByNomAndPays(String raisonSociale, String pays) {
+        return societeRepository.findByRaisonSocialeAndPays(raisonSociale, pays).orElse(null);
     }
 
     @Transactional

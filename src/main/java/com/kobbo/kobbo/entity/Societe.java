@@ -28,4 +28,7 @@ public class Societe {
 
     @Column(name = "adresse")
     private String adresse;
+
+    @Column(name = "pays")
+    private String pays;
 }

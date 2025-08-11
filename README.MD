@@ -61,9 +61,21 @@ L'utilisateur crée un compte personnel en remplissant un formulaire avec les ch
 
 Une fois le compte créé, il est redirigé vers la page de connexion.
 
-### 🔐 Connexion et gestion des sociétés
+### 🏢 Connexion, sélection de la société et navigation
 
-Après connexion (via email + mot de passe), l'utilisateur accède à un tableau de bord listant ses sociétés (le cas
+1️⃣ Connexion initiale :
+
+L’utilisateur s’authentifie avec email + mot de passe.
+
+    Backend génère un JWT de courte durée (5 min par exemple) :
+    
+    hasSociete = false
+    
+    Pas de idSociete
+    
+    Ce token ne permet que d’appeler /auth/select-societe.
+
+Après connexion (via email + mot de passe), l'utilisateur accède à une nouvelle page listant ses sociétés (le cas
 échéant).
 
 S’il n’en a aucune, un bouton **"Créer une société"** lui est proposé.
@@ -74,18 +86,34 @@ Lors de la création d’une société, les éléments suivants sont générés 
 - Création automatique du rôle `ADMINISTRATEUR`
 - Affectation de l’utilisateur courant à cette société avec le rôle `ADMINISTRATEUR` (`comptes_societe`)
 
-### 🏢 Sélection de la société et navigation
+2️⃣ Sélection de société :
+
+L’utilisateur choisit une société → appel à /auth/select-societe/{idSociete} avec le 1er token.
+
+    Backend vérifie :
+    
+    Que la société appartient à l’utilisateur.
+    
+    Que hasSociete est bien false.
+    
+    Génère un nouveau JWT (plus longue durée, ex : 24h) :
+    
+    hasSociete = true
+    
+    Contient idSociete.
+
+3️⃣ Requêtes métier :
+
+Un filtre Spring Security bloque toute requête qui n’a pas hasSociete = true.
+
+Les endpoints sensibles n’ont donc jamais accès à un token “incomplet”.
 
 L'utilisateur sélectionne une société pour définir le contexte d’exécution.
 
 Une fois la société choisie, le menu principal est affiché, donnant accès aux différentes fonctionnalités (gestion des
-utilisateurs, rôles, transactions, etc.).
-
-#### Explication en image
+utilisateurs, rôles, opérations, natures, etc.).
 
 ![Création de compte - Kobbo](CreationCompte.png)
-
-### 💡 Détails importants
 
 ### 🔐 Authentification
 

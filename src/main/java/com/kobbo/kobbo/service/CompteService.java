@@ -6,10 +6,10 @@ import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
 import com.kobbo.kobbo.entity.Compte;
 import com.kobbo.kobbo.entity.Role;
 import com.kobbo.kobbo.entity.Societe;
+import com.kobbo.kobbo.entity.Utilisateur;
+import com.kobbo.kobbo.exception.DuplicateEntryException;
 import com.kobbo.kobbo.mapper.CompteMapper;
-import com.kobbo.kobbo.mapper.SocieteMapper;
 import com.kobbo.kobbo.repository.ComptesRepository;
-import com.kobbo.kobbo.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,33 +20,38 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CompteService {
     private final SocieteService societeService;
-    private final SocieteMapper societeMapper;
     private final AuthUtils authUtils;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
     private final ComptesRepository comptesRepository;
     private final CompteMapper compteMapper;
     private final UtilisateurService utilisateurService;
-    
+
     private final String ROLE_PROPRIETAIRE = "PROPRIETAIRE";
 
     @Transactional
     public CompteDto createCompte(RegisterSocieteRequest request) {
         //1- Create Societe
-        Societe societe = societeMapper.societeDtoToEntity(societeService.createSociete(request));
+        Societe societe = societeService.createSociete(request);
 
         //2- Create Role
-        Role role = new Role();
-        role.setLibelle(ROLE_PROPRIETAIRE);
-        role.setSociete(societe);
-        roleRepository.save(role);
+        Role role = roleService.createRole(ROLE_PROPRIETAIRE, societe);
 
         //3- Utilisateur
         UUID utilisateurId = authUtils.getCurrentUserId();
+        Utilisateur utilisateur = utilisateurService.getUtilisateurById(utilisateurId);
+
+        //Vérifier si l'utilisateur a déjà un compte dans cette société
+        Compte compte = comptesRepository.findByUtilisateurIdAndRoleId(utilisateurId, role.getId()).orElse(null);
+        if (compte != null) {
+            throw new DuplicateEntryException("L'utilisateur " + utilisateur.getNom(),
+                    role.getLibelle() + " dans la société " + role.getSociete().getRaisonSociale());
+        }
 
         //4- Créer compte société
-        Compte compte = new Compte();
+        compte = new Compte();
         compte.setRole(role);
-        compte.setUtilisateur(utilisateurService.getUtilisateurById(utilisateurId));
+        compte.setUtilisateur(utilisateur);
+        compte.setActif(true);
 
         return compteMapper.toDto(comptesRepository.save(compte));
     }

@@ -14,4 +14,5 @@ public class SocieteDto {
     private String raisonSociale;
     private String email;
     private String adresse;
+    private String pays;
 }

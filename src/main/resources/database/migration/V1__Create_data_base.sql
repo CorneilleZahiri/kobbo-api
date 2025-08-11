@@ -2,8 +2,10 @@
 CREATE TABLE societes (
   id BINARY(16) PRIMARY KEY NOT NULL DEFAULT(uuid_to_bin(uuid())),
   raison_sociale VARCHAR(255) NOT NULL,
-  email VARCHAR(255) DEFAULT '',
-  adresse VARCHAR(255) DEFAULT ''
+  email VARCHAR(255),
+  adresse VARCHAR(255),
+  pays VARCHAR(255) NOT NULL DEFAULT 'Bénin',
+  UNIQUE (raison_sociale, pays)
 );
 
 -- Table ROLES
@@ -43,7 +45,8 @@ CREATE TABLE tiers (
   nature VARCHAR(255),
   contact VARCHAR(50),
   comptes_societe_id BINARY(16) NOT NULL,
-  FOREIGN KEY (comptes_societe_id) REFERENCES comptes_societe(id) ON DELETE CASCADE
+  FOREIGN KEY (comptes_societe_id) REFERENCES comptes_societe(id) ON DELETE CASCADE,
+  INDEX (nature)
 );
 
 -- Table NATURES

@@ -15,4 +15,7 @@ public class RegisterSocieteRequest {
     private String email;
 
     private String adresse;
+
+    @NotBlank(message = "Le pays est vide.")
+    private String pays;
 }

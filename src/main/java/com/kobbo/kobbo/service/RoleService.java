@@ -46,6 +46,21 @@ public class RoleService {
     }
 
     @Transactional
+    public Role createRole(String libelleRole, Societe societe) {
+        //Contrôler le doublon sur le libellé
+        Role role = getRoleByLibelleAndSocieteId(libelleRole, societe.getId());
+
+        if (role == null) {
+            role = new Role();
+            role.setLibelle(libelleRole);
+            role.setSociete(societe);
+            role = roleRepository.save(role);
+        }
+
+        return role;
+    }
+
+    @Transactional
     public Role getRoleByLibelleAndSocieteId(String intitule, UUID id) {
         return roleRepository.findByLibelleAndSocieteId(intitule, id).orElse(null);
     }
