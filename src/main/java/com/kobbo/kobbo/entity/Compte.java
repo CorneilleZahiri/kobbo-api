@@ -14,7 +14,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ComptesSociete {
+public class Compte {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")

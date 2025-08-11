@@ -31,5 +31,5 @@ public class Tiers {
 
     @ManyToOne
     @JoinColumn(name = "comptes_societe_id")
-    private ComptesSociete comptesSociete;
+    private Compte compte;
 }

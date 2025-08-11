@@ -5,8 +5,6 @@ import com.kobbo.kobbo.dto.jwt.request.LoginUtilisateurRequest;
 import com.kobbo.kobbo.dto.jwt.response.JwtResponse;
 import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurDto;
 import com.kobbo.kobbo.entity.Utilisateur;
-import com.kobbo.kobbo.mapper.UtilisateurMapper;
-import com.kobbo.kobbo.repository.UtilisateurRepository;
 import com.kobbo.kobbo.service.Jwt;
 import com.kobbo.kobbo.service.JwtService;
 import com.kobbo.kobbo.service.UtilisateurService;
@@ -28,8 +26,6 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UtilisateurRepository userRepository;
-    private final UtilisateurMapper utilisateurMapper;
     private final JwtConfig jwtConfig;
     private UtilisateurService utilisateurService;
 
