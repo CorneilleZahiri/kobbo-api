@@ -34,7 +34,7 @@ public class RoleController {
         RoleDto roleDto = roleService.createRole(request, societeId);
 
         URI location = uriComponentsBuilder.path("/societes/{id}/roles/{id}")
-                .buildAndExpand(roleDto.getSocieteDto().getId(), roleDto.getId())
+                .buildAndExpand(roleDto.getSociete().getId(), roleDto.getId())
                 .toUri();
 
         return ResponseEntity.created(location).body(roleDto);
