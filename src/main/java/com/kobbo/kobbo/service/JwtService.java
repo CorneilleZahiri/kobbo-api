@@ -15,19 +15,20 @@ import java.util.Date;
 public class JwtService {
     private final JwtConfig jwtConfig;
 
-    public Jwt generateAccessToken(Utilisateur utilisateur) {
-        return generateToken(utilisateur, jwtConfig.getAccessTokenExpiration());
+    public Jwt generateAccessToken(Utilisateur utilisateur, Boolean hasSociete) {
+        return generateToken(utilisateur, jwtConfig.getAccessTokenExpiration(), hasSociete);
     }
 
-    public Jwt generateRefreshToken(Utilisateur utilisateur) {
-        return generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration());
+    public Jwt generateRefreshToken(Utilisateur utilisateur, Boolean hasSociete) {
+        return generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration(), hasSociete);
     }
 
-    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration) {
+    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration, Boolean hasSociete) {
         Claims claims = Jwts.claims()
                 .subject(utilisateur.getId().toString())
                 .add("email", utilisateur.getEmail())
                 .add("nom", utilisateur.getNom())
+                .add("hasSociete", hasSociete)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
                 .build();

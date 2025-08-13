@@ -1,18 +1,17 @@
 package com.kobbo.kobbo.controller;
 
 import com.kobbo.kobbo.dto.comptes.response.CompteDto;
+import com.kobbo.kobbo.dto.comptes.response.CompteResponse;
 import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
 import com.kobbo.kobbo.service.CompteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/comptes")
@@ -30,5 +29,10 @@ public class CompteController {
                 .toUri();
 
         return ResponseEntity.created(location).body(compteDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CompteResponse>> listCompte() {
+        return ResponseEntity.ok(compteService.listCompte());
     }
 }
