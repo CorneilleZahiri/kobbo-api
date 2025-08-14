@@ -4,6 +4,7 @@ import com.kobbo.kobbo.entity.Compte;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,6 @@ public interface ComptesRepository extends JpaRepository<Compte, UUID> {
     Optional<Compte> findByUtilisateurIdAndRoleId(UUID utilisateurId, UUID roleId);
 
     @EntityGraph(attributePaths = {"role", "role.societe"})
-    @Query("select c from Compte c")
-    List<Compte> findByUtilisateurId(UUID utilisateurId);
+    @Query("select c from Compte c where c.utilisateur.id = :utilisateurId")
+    List<Compte> findByUtilisateurId(@Param("utilisateurId") UUID utilisateurId);
 }

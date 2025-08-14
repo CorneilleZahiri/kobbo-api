@@ -64,6 +64,8 @@ public class CompteService {
         UUID utilisateurId = authUtils.getCurrentUserId();
         Utilisateur utilisateur = utilisateurService.getUtilisateurById(utilisateurId);
 
+        System.out.println(utilisateur.getEmail());
+        
         return comptesRepository
                 .findByUtilisateurId(utilisateur.getId())
                 .stream().map(compteMapper::toCompteResponse).toList();

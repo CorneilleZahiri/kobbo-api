@@ -67,13 +67,13 @@ Une fois le compte créé, il est redirigé vers la page de connexion.
 
 L’utilisateur s’authentifie avec email + mot de passe.
 
-    Backend génère un JWT de courte durée (5 min par exemple) :
+    Backend génère un JWT simple de courte durée (5 min par exemple) :
     
     hasSociete = false
     
-    Pas de idSociete
+    Pas de compteId
     
-    Ce token ne permet que d’appeler /auth/select-societe.
+    Ce token ne permet que d’appeler /comptes/select.
 
 Après connexion (via email + mot de passe), l'utilisateur accède à une nouvelle page listant ses sociétés (le cas
 échéant).
@@ -83,12 +83,12 @@ S’il n’en a aucune, un bouton **"Créer une société"** lui est proposé.
 Lors de la création d’une société, les éléments suivants sont générés :
 
 - Enregistrement de la société (`societes`)
-- Création automatique du rôle `ADMINISTRATEUR`
-- Affectation de l’utilisateur courant à cette société avec le rôle `ADMINISTRATEUR` (`comptes_societe`)
+- Création automatique du rôle `PROPRIETAIRE`
+- Affectation de l’utilisateur courant à cette société avec le rôle `PROPRIETATIRE` (`comptes_societe`)
 
 2️⃣ Sélection de société :
 
-L’utilisateur choisit une société → appel à /auth/select-societe/{idSociete} avec le 1er token.
+L’utilisateur choisit une société → appel à `/comptes/select` avec le 1er token.
 
     Backend vérifie :
     
@@ -96,11 +96,11 @@ L’utilisateur choisit une société → appel à /auth/select-societe/{idSocie
     
     Que hasSociete est bien false.
     
-    Génère un nouveau JWT (plus longue durée, ex : 24h) :
+    Génère un nouveau JWT enrichi (plus longue durée, ex : 24h) :
     
     hasSociete = true
     
-    Contient idSociete.
+    Contient compteId.
 
 3️⃣ Requêtes métier :
 
@@ -132,9 +132,9 @@ Le backend effectue les actions suivantes (transaction atomique) :
 
 1- Crée la société
 
-2- Crée automatiquement un rôle par défaut ADMINISTRATEUR (si non existant)
+2- Crée automatiquement un rôle par défaut PROPRIETAIRE (si non existant)
 
-3- Crée une entrée dans comptes_societe liant l’utilisateur, la société et le rôle ADMINISTRATEUR
+3- Crée une entrée dans comptes_societe liant l’utilisateur, la société et le rôle PROPRIETAIRE
 
 #### 📌 Exemple JSON - Création société
 
@@ -155,7 +155,7 @@ Réponse :
         "nom": "Kobbo SARL",
         "admin": {
             "idUtilisateur": "uuid-user",
-            "role": "ADMINISTRATEUR"
+            "role": "PROPRIETAIRE"
         }
     }
 
