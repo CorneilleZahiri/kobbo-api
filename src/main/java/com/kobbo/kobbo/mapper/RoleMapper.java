@@ -10,7 +10,6 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
-    @Mapping(source = "societe.id", target = "societeDto.id")
     RoleDto toDto(Role role);
 
     @Mapping(target = "id", ignore = true)

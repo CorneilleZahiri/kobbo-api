@@ -2,6 +2,7 @@ package com.kobbo.kobbo.service;
 
 import com.kobbo.kobbo.config.AuthUtils;
 import com.kobbo.kobbo.dto.comptes.response.CompteDto;
+import com.kobbo.kobbo.dto.comptes.response.CompteResponse;
 import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
 import com.kobbo.kobbo.entity.Compte;
 import com.kobbo.kobbo.entity.Role;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -54,5 +56,18 @@ public class CompteService {
         compte.setActif(true);
 
         return compteMapper.toDto(comptesRepository.save(compte));
+    }
+
+    @Transactional
+    public List<CompteResponse> listCompte() {
+        //Utilisateur connecté
+        UUID utilisateurId = authUtils.getCurrentUserId();
+        Utilisateur utilisateur = utilisateurService.getUtilisateurById(utilisateurId);
+
+        System.out.println(utilisateur.getEmail());
+        
+        return comptesRepository
+                .findByUtilisateurId(utilisateur.getId())
+                .stream().map(compteMapper::toCompteResponse).toList();
     }
 }

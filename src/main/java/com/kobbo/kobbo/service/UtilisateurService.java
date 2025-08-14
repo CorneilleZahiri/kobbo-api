@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,6 +42,11 @@ public class UtilisateurService implements UserDetailsService {
         utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
 
         return utilisateurMapper.toDto(utilisateurRepository.save(utilisateur));
+    }
+
+    @Transactional
+    public List<UtilisateurDto> listUtilisateur() {
+        return utilisateurRepository.findAll().stream().map(utilisateurMapper::toDto).toList();
     }
 
     @Transactional
