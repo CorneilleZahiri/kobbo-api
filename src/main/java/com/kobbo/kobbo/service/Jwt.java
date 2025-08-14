@@ -24,6 +24,22 @@ public class Jwt {
         return UUID.fromString(claims.getSubject());
     }
 
+    // Accès direct et sécurisé au claim hasSociete
+    public boolean hasSociete() {
+        // évite les NPE si le claim est absent
+        return Boolean.TRUE.equals(claims.get("hasSociete", Boolean.class));
+    }
+
+    public UUID getCompteId() {
+        String compteIdStr = claims.get("compteId", String.class);
+        // évite les NPE si le claim est absent
+        return compteIdStr != null ? UUID.fromString(compteIdStr) : null;
+    }
+
+    public String getRole() {
+        return claims.get("role", String.class);
+    }
+
     public String toString() {
         return Jwts.builder().claims(claims).signWith(secretKey).compact();
     }

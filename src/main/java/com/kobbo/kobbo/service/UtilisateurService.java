@@ -1,5 +1,6 @@
 package com.kobbo.kobbo.service;
 
+import com.kobbo.kobbo.config.AuthUtils;
 import com.kobbo.kobbo.dto.utilisateur.request.RegisterUtilisateurRequest;
 import com.kobbo.kobbo.dto.utilisateur.request.UpdateUtilisateurMotDePasse;
 import com.kobbo.kobbo.dto.utilisateur.request.UpdateUtilisateurRequest;
@@ -7,11 +8,10 @@ import com.kobbo.kobbo.dto.utilisateur.response.UtilisateurDto;
 import com.kobbo.kobbo.entity.Utilisateur;
 import com.kobbo.kobbo.exception.DuplicateEntryException;
 import com.kobbo.kobbo.exception.EntityNotFoundException;
+import com.kobbo.kobbo.exception.InvalideArgumentException;
 import com.kobbo.kobbo.mapper.UtilisateurMapper;
 import com.kobbo.kobbo.repository.UtilisateurRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +29,7 @@ public class UtilisateurService implements UserDetailsService {
     private final UtilisateurRepository utilisateurRepository;
     private final UtilisateurMapper utilisateurMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuthUtils authUtils;
 
     @Transactional
     public UtilisateurDto createUtilisateur(RegisterUtilisateurRequest request) {
@@ -90,13 +91,14 @@ public class UtilisateurService implements UserDetailsService {
         utilisateurRepository.deleteById(utilisateur.getId());
     }
 
+    @Transactional
     public void updateMotDePasse(UUID utilisateurId, UpdateUtilisateurMotDePasse updateUtilisateurMotDePasse) {
         //Vérifier que l'utilisateur existe
         Utilisateur utilisateur = this.getUtilisateurById(utilisateurId);
 
         //Vérifier si l'ancien mot est réellement saisi par l'utilisateur propriétaire
         if (!utilisateur.getMotDePasse().equals(updateUtilisateurMotDePasse.getAncienMotDePasse())) {
-            throw new IllegalArgumentException("L'ancien mot de passe est incorrecte");
+            throw new InvalideArgumentException("L'ancien mot de passe est incorrecte");
         }
 
         //Modifier
@@ -104,11 +106,9 @@ public class UtilisateurService implements UserDetailsService {
         utilisateurRepository.save(utilisateur);
     }
 
+    @Transactional
     public UtilisateurDto me() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UUID userId = (UUID) authentication.getPrincipal();
-
-        Utilisateur utilisateur = getUtilisateurById(userId);
+        Utilisateur utilisateur = getUtilisateurById(authUtils.getCurrentUser().getUserId());
 
         return utilisateurMapper.toDto(utilisateur);
     }

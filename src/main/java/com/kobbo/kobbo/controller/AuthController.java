@@ -44,8 +44,8 @@ public class AuthController {
 
         Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(request.getEmail());
 
-        Jwt accessToken = jwtService.generateAccessToken(utilisateur, false);
-        Jwt refreshToken = jwtService.generateRefreshToken(utilisateur, false);
+        Jwt accessToken = jwtService.generateAccessToken(utilisateur, false, null, null);
+        Jwt refreshToken = jwtService.generateRefreshToken(utilisateur, false, null, null);
 
         Cookie cookie = new Cookie("refreshToken", refreshToken.toString());
         cookie.setHttpOnly(true);
@@ -68,7 +68,8 @@ public class AuthController {
         }
 
         Utilisateur utilisateur = utilisateurService.getUtilisateurById(jwt.getUserId());
-        Jwt accessToken = jwtService.generateAccessToken(utilisateur, false);
+        Jwt accessToken = jwtService.generateAccessToken(utilisateur, jwt.hasSociete(),
+                jwt.getCompteId(), jwt.getRole());
 
         return ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }

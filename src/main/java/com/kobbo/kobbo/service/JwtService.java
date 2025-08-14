@@ -9,26 +9,60 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class JwtService {
     private final JwtConfig jwtConfig;
 
-    public Jwt generateAccessToken(Utilisateur utilisateur, Boolean hasSociete) {
-        return generateToken(utilisateur, jwtConfig.getAccessTokenExpiration(), hasSociete);
+    public Jwt generateAccessToken(Utilisateur utilisateur, Boolean hasSociete,
+                                   UUID compteId, String role) {
+        Jwt jwt;
+        if (!hasSociete) {
+            jwt = generateToken(utilisateur, jwtConfig.getAccessTokenExpiration());
+        } else {
+            jwt = generateToken(utilisateur, jwtConfig.getAccessTokenExpiration(), compteId, role);
+        }
+
+        return jwt;
     }
 
-    public Jwt generateRefreshToken(Utilisateur utilisateur, Boolean hasSociete) {
-        return generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration(), hasSociete);
+    public Jwt generateRefreshToken(Utilisateur utilisateur, Boolean hasSociete,
+                                    UUID compteId, String role) {
+        Jwt jwt;
+        if (!hasSociete) {
+            jwt = generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration());
+        } else {
+            jwt = generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration(), compteId, role);
+        }
+
+        return jwt;
     }
 
-    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration, Boolean hasSociete) {
+    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration) {
         Claims claims = Jwts.claims()
                 .subject(utilisateur.getId().toString())
                 .add("email", utilisateur.getEmail())
                 .add("nom", utilisateur.getNom())
-                .add("hasSociete", hasSociete)
+                .add("hasSociete", false)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
+                .build();
+
+        return new Jwt(claims, jwtConfig.getSecretKey());
+    }
+
+    //Surcharger la méthode
+    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration,
+                              UUID compteId, String role) {
+        Claims claims = Jwts.claims()
+                .subject(utilisateur.getId().toString())
+                .add("email", utilisateur.getEmail())
+                .add("nom", utilisateur.getNom())
+                .add("hasSociete", true)
+                .add("compteId", compteId)
+                .add("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
                 .build();
