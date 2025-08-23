@@ -38,6 +38,7 @@ public class JwtService {
                 .add("email", utilisateur.getEmail())
                 .add("nom", utilisateur.getNom())
                 .add("hasSociete", hasSociete)
+                .add("jti", UUID.randomUUID().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration));
 

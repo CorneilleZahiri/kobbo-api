@@ -40,6 +40,12 @@ public class Jwt {
         return claims.get("role", String.class);
     }
 
+    public UUID getJti() {
+        String jtiStr = claims.get("jti", String.class);
+        // évite les NPE si le claim est absent
+        return jtiStr != null ? UUID.fromString(jtiStr) : null;
+    }
+
     public String toString() {
         return Jwts.builder().claims(claims).signWith(secretKey).compact();
     }
