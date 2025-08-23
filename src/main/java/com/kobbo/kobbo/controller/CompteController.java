@@ -5,6 +5,7 @@ import com.kobbo.kobbo.dto.comptes.request.CompteRequest;
 import com.kobbo.kobbo.dto.comptes.response.CompteDto;
 import com.kobbo.kobbo.dto.comptes.response.CompteResponse;
 import com.kobbo.kobbo.dto.jwt.response.JwtResponse;
+import com.kobbo.kobbo.dto.jwt.response.TokenPairResponse;
 import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
 import com.kobbo.kobbo.service.CompteService;
 import com.kobbo.kobbo.service.Jwt;
@@ -46,9 +47,9 @@ public class CompteController {
     @PostMapping("/select")
     public ResponseEntity<JwtResponse> selectCompte(@Valid @RequestBody CompteRequest request,
                                                     HttpServletResponse response) {
-        List<Jwt> jwtList = compteService.selectCompte(request);
+        TokenPairResponse tokenPairResponse = compteService.selectCompte(request);
 
-        Jwt refreshToken = jwtList.get(1);
+        Jwt refreshToken = tokenPairResponse.refreshToken();
 
         Cookie cookie = new Cookie("refreshToken", refreshToken.toString());
         cookie.setHttpOnly(true);
@@ -57,6 +58,6 @@ public class CompteController {
         cookie.setSecure(true);
         response.addCookie(cookie);
 
-        return ResponseEntity.ok().body(new JwtResponse(jwtList.get(0).toString()));
+        return ResponseEntity.ok().body(new JwtResponse(tokenPairResponse.accessToken().toString()));
     }
 }
