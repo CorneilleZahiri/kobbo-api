@@ -19,39 +19,14 @@ public class JwtService {
 
     public Jwt generateAccessToken(Utilisateur utilisateur, Boolean hasSociete,
                                    UUID compteId, String role) {
-        Jwt jwt;
-        if (!hasSociete) {
-            jwt = generateToken(utilisateur, jwtConfig.getAccessTokenExpiration());
-        } else {
-            jwt = generateToken(utilisateur, jwtConfig.getAccessTokenExpiration(), compteId, role);
-        }
 
-        return jwt;
+        return generateToken(utilisateur, jwtConfig.getAccessTokenExpiration(), hasSociete, compteId, role);
     }
 
     public Jwt generateRefreshToken(Utilisateur utilisateur, Boolean hasSociete,
                                     UUID compteId, String role) {
-        Jwt jwt;
-        if (!hasSociete) {
-            jwt = generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration());
-        } else {
-            jwt = generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration(), compteId, role);
-        }
 
-        return jwt;
-    }
-
-    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration) {
-        Claims claims = Jwts.claims()
-                .subject(utilisateur.getId().toString())
-                .add("email", utilisateur.getEmail())
-                .add("nom", utilisateur.getNom())
-                .add("hasSociete", false)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .build();
-
-        return new Jwt(claims, jwtConfig.getSecretKey());
+        return generateToken(utilisateur, jwtConfig.getRefreshTokenExpiration(), hasSociete, compteId, role);
     }
 
     //Surcharger la méthode
@@ -62,15 +37,14 @@ public class JwtService {
                 .subject(utilisateur.getId().toString())
                 .add("email", utilisateur.getEmail())
                 .add("nom", utilisateur.getNom())
-                .add("hasSociete", true)
-                .add("compteId", compteId)
-                .add("role", role)
+                .add("hasSociete", hasSociete)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration));
 
         // Ajouter les claims optionnels seulement si présents
         if (hasSociete && compteId != null && role != null) {
-            claimsBuilder.add("compteId", compteId.toString())
+            claimsBuilder
+                    .add("compteId", compteId.toString())
                     .add("role", role);
         }
 

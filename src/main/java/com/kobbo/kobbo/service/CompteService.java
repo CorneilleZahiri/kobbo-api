@@ -4,6 +4,7 @@ import com.kobbo.kobbo.config.AuthUtils;
 import com.kobbo.kobbo.dto.comptes.request.CompteRequest;
 import com.kobbo.kobbo.dto.comptes.response.CompteDto;
 import com.kobbo.kobbo.dto.comptes.response.CompteResponse;
+import com.kobbo.kobbo.dto.jwt.response.TokenPairResponse;
 import com.kobbo.kobbo.dto.societe.request.RegisterSocieteRequest;
 import com.kobbo.kobbo.entity.Compte;
 import com.kobbo.kobbo.entity.Role;
@@ -18,7 +19,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,22 +71,40 @@ public class CompteService {
                 .stream().map(compteMapper::toCompteResponse).toList();
     }
 
+    @Transactional
+    public TokenPairResponse selectCompte(CompteRequest request) {
+        // 1 - hasSociete = false ?
+        verifyIfIsPossibleToSelectCompte();
+
+        // 2 - compteId exists and belong to user
+        Compte compte = verifyIfCompteExistsAndBelongToUser(request);
+
+        // Générer le jeton enrichir. Il va contenir en plus de l'user, compteId, role
+        Jwt accessToken = jwtService.generateAccessToken(getUtilisateurConnecte(),
+                true, compte.getId(), compte.getRole().getLibelle());
+
+        Jwt refreshToken = jwtService.generateRefreshToken(getUtilisateurConnecte(),
+                true, compte.getId(), compte.getRole().getLibelle());
+
+        return new TokenPairResponse(accessToken, refreshToken);
+    }
 
     @Transactional
-    public List<Jwt> selectCompte(CompteRequest request) {
-        /* Vérification backend :
-        1 - hasSociete = false ? */
+    public void verifyIfIsPossibleToSelectCompte() {
+        // 1 - hasSociete = false ?
         if (authUtils.getCurrentUser().hasSociete()) {
             throw new InvalideArgumentException("Le jeton utilisé ne permet pas la sélection " +
                     "d'un compte société car il a déjà servi à faire de sélection.");
         }
+    }
 
+    @Transactional
+    public Compte verifyIfCompteExistsAndBelongToUser(CompteRequest request) {
         // 2 - compteId existe ?
         Compte compte = comptesRepository.findById(request.getId()).orElse(null);
         if (compte == null) {
             throw new EntityNotFoundException("Le compte ", request.getId());
         }
-
 
         // 3 - appartient à l'user connecté ?
         if (!compte.getUtilisateur().getId().equals(authUtils.getCurrentUser().getUserId())) {
@@ -98,19 +116,7 @@ public class CompteService {
             throw new InvalideArgumentException("Le compte a été désactivé pour l'utilisateur connecté");
         }
 
-        // Générer le jeton enrichir.
-        //Il va contenir en plus de l'user, compteId, role
-        Jwt accessToken = jwtService.generateAccessToken(getUtilisateurConnecte(),
-                true, compte.getId(), compte.getRole().getLibelle());
-
-        Jwt refreshToken = jwtService.generateRefreshToken(getUtilisateurConnecte(),
-                true, compte.getId(), compte.getRole().getLibelle());
-
-        List<Jwt> jwtList = new ArrayList<>();
-        jwtList.add(accessToken);
-        jwtList.add(refreshToken);
-
-        return jwtList;
+        return compte;
     }
 
     @Transactional
