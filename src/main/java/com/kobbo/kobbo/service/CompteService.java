@@ -1,6 +1,7 @@
 package com.kobbo.kobbo.service;
 
 import com.kobbo.kobbo.config.AuthUtils;
+import com.kobbo.kobbo.config.JwtConfig;
 import com.kobbo.kobbo.dto.comptes.request.CompteRequest;
 import com.kobbo.kobbo.dto.comptes.response.CompteDto;
 import com.kobbo.kobbo.dto.comptes.response.CompteResponse;
@@ -15,6 +16,7 @@ import com.kobbo.kobbo.exception.EntityNotFoundException;
 import com.kobbo.kobbo.exception.InvalideArgumentException;
 import com.kobbo.kobbo.mapper.CompteMapper;
 import com.kobbo.kobbo.repository.ComptesRepository;
+import com.kobbo.kobbo.repository.JwtRedisRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,9 @@ public class CompteService {
     private final CompteMapper compteMapper;
     private final UtilisateurService utilisateurService;
     private final JwtService jwtService;
+    private final JwtConfig jwtConfig;
+    private final JwtRedisRepository jwtRedisRepository;
+    private final JwtRedisService jwtRedisService;
 
     private final String ROLE_PROPRIETAIRE = "PROPRIETAIRE";
 
@@ -73,6 +78,9 @@ public class CompteService {
 
     @Transactional
     public TokenPairResponse selectCompte(CompteRequest request) {
+        //Vérifier si le token de connexion a été utilisé pour sélectionner une société
+        jwtRedisService.verifyIfTokenIsUsedToSelect();
+
         // 1 - hasSociete = false ?
         verifyIfIsPossibleToSelectCompte();
 
