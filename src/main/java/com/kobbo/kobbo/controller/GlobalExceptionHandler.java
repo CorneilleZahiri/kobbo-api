@@ -2,6 +2,7 @@ package com.kobbo.kobbo.controller;
 
 import com.kobbo.kobbo.exception.DuplicateEntryException;
 import com.kobbo.kobbo.exception.EntityNotFoundException;
+import com.kobbo.kobbo.exception.InvalideArgumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,5 +33,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateEntryException.class)
     public ResponseEntity<Map<String, String>> handleDuplicateEntry(DuplicateEntryException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("erreur", exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalideArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleInvalideArgument(InvalideArgumentException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of("erreur", exception.getMessage()));
     }
 }

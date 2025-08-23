@@ -3,6 +3,7 @@ package com.kobbo.kobbo.service;
 import com.kobbo.kobbo.config.JwtConfig;
 import com.kobbo.kobbo.entity.Utilisateur;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ClaimsBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
@@ -54,9 +55,10 @@ public class JwtService {
     }
 
     //Surcharger la méthode
-    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration,
-                              UUID compteId, String role) {
-        Claims claims = Jwts.claims()
+    private Jwt generateToken(Utilisateur utilisateur, long tokenExpiration
+            , Boolean hasSociete, UUID compteId, String role) {
+
+        ClaimsBuilder claimsBuilder = Jwts.claims()
                 .subject(utilisateur.getId().toString())
                 .add("email", utilisateur.getEmail())
                 .add("nom", utilisateur.getNom())
@@ -64,10 +66,15 @@ public class JwtService {
                 .add("compteId", compteId)
                 .add("role", role)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .build();
+                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration));
 
-        return new Jwt(claims, jwtConfig.getSecretKey());
+        // Ajouter les claims optionnels seulement si présents
+        if (hasSociete && compteId != null && role != null) {
+            claimsBuilder.add("compteId", compteId.toString())
+                    .add("role", role);
+        }
+
+        return new Jwt(claimsBuilder.build(), jwtConfig.getSecretKey());
     }
 
     public Jwt parseToken(String token) {
